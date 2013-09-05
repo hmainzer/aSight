@@ -1,6 +1,7 @@
 package filter;
 
 import java.awt.Color;
+import java.awt.Container;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
@@ -14,9 +15,9 @@ public class TestFilter extends AbstractFilter {
 	}
 
 	@Override
-	public void createGUI(Object parentBox) {
+	public void createGUI( Container parentBox ) {
 		// TODO Auto-generated method stub
-
+		
 	}
 
 	@Override
@@ -24,5 +25,7 @@ public class TestFilter extends AbstractFilter {
 		// TODO Auto-generated method stub
 		return 0;
 	}
+
+	
 
 }

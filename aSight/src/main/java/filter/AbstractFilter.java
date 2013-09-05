@@ -1,5 +1,6 @@
 package filter;
 
+import java.awt.Container;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
@@ -18,7 +19,7 @@ public abstract class AbstractFilter implements Filter {
 	protected abstract BufferedImage action(BufferedImage img,
 			Graphics2D graphic);
 
-	public abstract void createGUI(Object parentBox);
+	public abstract void createGUI(Container parentBox);
 	public abstract int getGUIHeigth();
 	
 	public void setActive(boolean act) {
