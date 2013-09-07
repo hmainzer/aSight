@@ -5,8 +5,12 @@ import java.awt.image.BufferedImage;
 
 public interface Filter {
 	public BufferedImage useFilter( BufferedImage img );
+
 	public void createGUI( Container parentBox );
+
 	public int getGUIHeigth();
-	public void setActive(boolean act);
+
+	public void setActive( boolean act );
+
 	public boolean isActive();
 }

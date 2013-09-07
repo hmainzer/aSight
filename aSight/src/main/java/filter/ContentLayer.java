@@ -10,5 +10,4 @@ public class ContentLayer extends AbstractFilter {
 		return img;
 	}
 
-
 }

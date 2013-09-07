@@ -7,16 +7,16 @@ public class InformationContent {
 	private int timeout;
 	private final Filter parent;
 	private int id;
-	
-	public InformationContent( String message, int x, int y, int timeout, Filter parent ){
+
+	public InformationContent( String message, int x, int y, int timeout, Filter parent ) {
 		this.message = message;
 		this.x = x;
 		this.y = y;
 		this.timeout = timeout;
 		this.parent = parent;
 	}
-	
-	public void setId(int id){
+
+	public void setId( int id ) {
 		this.id = id;
 	}
 
@@ -59,6 +59,5 @@ public class InformationContent {
 	public void setTimeout( int timeout ) {
 		this.timeout = timeout;
 	}
-	
-	
+
 }

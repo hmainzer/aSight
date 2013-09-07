@@ -7,15 +7,12 @@ import java.awt.image.BufferedImage;
 public class TestFilter extends AbstractFilter {
 
 	@Override
-	protected BufferedImage action(BufferedImage img ) {
+	protected BufferedImage action( BufferedImage img ) {
 		Graphics2D graphic = img.createGraphics();
-		graphic.setColor(Color.BLUE);
-		graphic.fillOval(0, 0, img.getWidth(), img.getHeight());
+		graphic.setColor( Color.BLUE );
+		graphic.fillOval( 0, 0, img.getWidth(), img.getHeight() );
 		graphic.dispose();
 		return img;
 	}
-	
-
-	
 
 }

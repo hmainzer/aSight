@@ -30,10 +30,10 @@ public class ZoomFilter extends AbstractFilter {
 
 		// JCheckBox
 		final JCheckBox isActiveBox = new JCheckBox( "Activate" );
-		isActiveBox.setBounds( 8, 40, 120, 24 );		
+		isActiveBox.setBounds( 8, 40, 120, 24 );
 		isActiveBox.addChangeListener( new ChangeListener() {
 			public void stateChanged( ChangeEvent e ) {
-				ZoomFilter.this.setActive( isActiveBox.isSelected() ); 			
+				ZoomFilter.this.setActive( isActiveBox.isSelected() );
 			}
 		} );
 		parentBox.add( isActiveBox );

@@ -17,25 +17,17 @@ public class InputStream extends Thread {
 		this.application = application;
 	}
 
-	
-	
 	public VideoField getTarget1() {
 		return target1;
 	}
-
-
 
 	public void setTarget1( VideoField target1 ) {
 		this.target1 = target1;
 	}
 
-
-
 	public VideoField getTarget2() {
 		return target2;
 	}
-
-
 
 	public void setTarget2( VideoField target2 ) {
 		this.target2 = target2;
@@ -48,7 +40,7 @@ public class InputStream extends Thread {
 
 			final Toolkit toolkit = Toolkit.getDefaultToolkit();
 			final Rectangle screenBounds = new Rectangle( toolkit.getScreenSize() );
-			while ( true ){
+			while ( true ) {
 				BufferedImage screen = robot.createScreenCapture( screenBounds );
 				target1.setImage( screen );
 				application.applyFilters( screen, target2 );

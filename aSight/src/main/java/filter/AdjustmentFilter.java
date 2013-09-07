@@ -13,7 +13,7 @@ public class AdjustmentFilter extends AbstractFilter {
 
 	private int x, y, width, height;
 	private JSpinner xSpinner, ySpinner;
-	
+
 	public AdjustmentFilter( int x, int y, int width, int height ) {
 		this.x = x;
 		this.y = y;
@@ -23,11 +23,11 @@ public class AdjustmentFilter extends AbstractFilter {
 
 	@Override
 	protected BufferedImage action( BufferedImage img ) {
-		if ( y + height > img.getHeight() ){
+		if ( y + height > img.getHeight() ) {
 			y = img.getHeight() - height;
 			ySpinner.setValue( y );
 		}
-		if ( x + width > img.getWidth() ){
+		if ( x + width > img.getWidth() ) {
 			x = img.getWidth() - width;
 			xSpinner.setValue( x );
 		}
