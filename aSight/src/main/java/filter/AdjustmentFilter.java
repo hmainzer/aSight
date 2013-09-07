@@ -6,10 +6,19 @@ import java.awt.image.BufferedImage;
 
 public class AdjustmentFilter extends AbstractFilter {
 
+	private int x, y, width, height;
+
+	public  AdjustmentFilter( int x, int y, int width, int height ) {
+		this.x = x;
+		this.y = y;
+		this.width = width;
+		this.height = height;
+	}
+
 	@Override
-	protected BufferedImage action( BufferedImage img, Graphics2D graphic ) {
-		// TODO Auto-generated method stub
-		return null;
+	protected BufferedImage action( BufferedImage img ) {
+		img = img.getSubimage( x, y, width, height );
+		return img;
 	}
 
 	@Override
@@ -23,5 +32,6 @@ public class AdjustmentFilter extends AbstractFilter {
 		// TODO Auto-generated method stub
 		return 0;
 	}
+
 
 }

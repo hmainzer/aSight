@@ -8,16 +8,15 @@ public abstract class AbstractFilter implements Filter {
 
 	private boolean active = false;
 
-	public BufferedImage useFilter(BufferedImage img, Graphics2D graphic) {
+	public BufferedImage useFilter(BufferedImage img ) {
 		if (active) {
-			return action(img, graphic);
+			return action(img);
 		} else {
 			return img;
 		}
 	}
 
-	protected abstract BufferedImage action(BufferedImage img,
-			Graphics2D graphic);
+	protected abstract BufferedImage action(BufferedImage img);
 
 	public abstract void createGUI(Container parentBox);
 	public abstract int getGUIHeigth();
@@ -29,5 +28,6 @@ public abstract class AbstractFilter implements Filter {
 	public boolean isActive() {
 		return active;
 	}
+	
 
 }

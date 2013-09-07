@@ -1,12 +1,9 @@
 package application;
 
 import java.awt.Graphics2D;
-import java.awt.GraphicsEnvironment; 
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.Vector;
-
 import filter.*;
 
 public class Main {
@@ -17,13 +14,15 @@ public class Main {
 	
 	public static void main( String[] args ) {
 		ArrayList<filter.Filter> filterList = new ArrayList<filter.Filter>();
-		filterList.add( new AdjustmentFilter() );
+		filterList.add( new AdjustmentFilter(300, 200, 320, 240 ) );
+		filterList.add( new ZoomFilter() );
 		filterList.add( new TestFilter() );
 		
 		filter.ContentLayer cl = new filter.ContentLayer();
 		filterList.add( cl );
 		
-		filterList.get( 1 ).setActive( true ); //%%
+		//filterList.get( 1 ).setActive( true );
+		//filterList.get( 2 ).setActive( true ); //%%
 		Gui.createGui( new Main(filterList, filterList.get( 0 ), cl) );
 	}	
 	
@@ -61,9 +60,8 @@ public class Main {
 	}
 	
 	public void applyFilters(BufferedImage in, VideoField out){
-		Graphics2D graphic = in.createGraphics();
-		for ( filter.Filter filter : filterList ) {
-			filter.useFilter( in, graphic );
+		for ( Filter filter : filterList ) {
+			in = filter.useFilter( in );
 		}
 		out.setImage( in );
 	}

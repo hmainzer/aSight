@@ -31,12 +31,8 @@ public class VideoField extends JComponent {
 
 	public void setImage( BufferedImage image ) {
 		Dimension imgDim = new Dimension( image.getHeight( null ), image.getWidth( null ) );
-		if ( !imgDim.equals( mySize ) ) {
-			BufferedImage resizedImage = new BufferedImage( mySize.width, mySize.height, image.getType() );
-			Graphics2D g = resizedImage.createGraphics();
-			g.drawImage( image, 0, 0, mySize.width, mySize.height, null );
-			g.dispose();
-			image = resizedImage;
+		if ( !imgDim.equals( mySize ) ) {			
+			image = application.Utility.resize( image, mySize.width, mySize.height );
 		}
 		SwingUtilities.invokeLater( new ImageRunnable( image ) );
 	}
