@@ -1,6 +1,5 @@
 package application;
 
-import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Vector;
@@ -14,7 +13,7 @@ public class Main {
 	
 	public static void main( String[] args ) {
 		ArrayList<filter.Filter> filterList = new ArrayList<filter.Filter>();
-		filterList.add( new AdjustmentFilter(300, 200, 320, 240 ) );
+		filterList.add( new AdjustmentFilter(100, 100, 1280, 1024 ) );
 		filterList.add( new ZoomFilter() );
 		filterList.add( new TestFilter() );
 		

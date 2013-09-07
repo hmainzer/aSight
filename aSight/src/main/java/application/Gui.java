@@ -12,7 +12,6 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import filter.*;
 import java.util.ArrayList;
-import javax.swing.JCheckBox;
 
 public class Gui {
 
@@ -62,6 +61,7 @@ public class Gui {
 	 */
 	private void initialize() {
 		frame = new JFrame();
+		frame.setTitle( "aSight" );
 		frame.setResizable( false );
 		frame.setBounds( 100, 100, 1000, 700 );
 		frame.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
@@ -69,7 +69,7 @@ public class Gui {
 
 		// absolute positioning: all x, y, w and h are multiples of 8!
 		// default line height: 24
-		
+
 		JPanel inPanel = new JPanel();
 		inPanel.setBounds( 0, 0, 320, 672 );
 		frame.getContentPane().add( inPanel );
@@ -90,33 +90,33 @@ public class Gui {
 		JPanel filterPanel = new JPanel();
 		filterPanel.setBounds( 320, 0, 360, 672 );
 		frame.getContentPane().add( filterPanel );
-		filterPanel.setLayout(null);
-		
+		filterPanel.setLayout( null );
+
 		{// filterPanel
 			ArrayList<Filter> filter = application.getFilter();
 			int sumHeightPx = 0;
 			int height = 0;
 			int y = 0;
-			// max height = 672 
-			for( Filter f : filter ){
-				if ( ( height = f.getGUIHeigth() ) > 0 ){
-					if ( sumHeightPx + height * 24 + (height + 1) * 8 > 672 ){
-						if ( y == 180 ){
-							System.err.println("to many filters!!!!");
+			// max height = 672
+			for ( Filter f : filter ) {
+				if ( ( height = f.getGUIHeigth() ) > 0 ) {
+					if ( ( sumHeightPx + height * 24 + ( height + 1 ) * 8 ) > 672 ) {
+						if ( y == 180 ) {
+							System.err.println( "to many filters!!!!" );
 						} else {
 							y = 180;
 							sumHeightPx = 0;
 						}
 					}
 					JPanel container = new JPanel();
-					container.setBounds( sumHeightPx, y, 180, height * 24 + (height + 1) * 8 );
+					container.setBounds( y, sumHeightPx, 180, height * 24 + ( height + 1 ) * 8 );
 					container.setLayout( null );
-					sumHeightPx = sumHeightPx + height * 24 + (height + 1) * 8;
+					sumHeightPx = sumHeightPx + height * 24 + ( height + 1 ) * 8;
 					f.createGUI( container );
 					filterPanel.add( container );
 				}
 			}
-			
+
 		}
 
 		JPanel outPanel = new JPanel();
@@ -138,9 +138,9 @@ public class Gui {
 
 		GraphicsDevice[] monitorArray = GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices();
 		JFrame fullFrame = new JFrame( "Fullscreen Display" );
-		fullFrame.setLocation( monitorArray[1].getDefaultConfiguration().getBounds().getLocation() ); 
-		fullFrame.setUndecorated( true ); 
-		fullFrame.setExtendedState( Frame.MAXIMIZED_BOTH ); 
+		fullFrame.setLocation( monitorArray[1].getDefaultConfiguration().getBounds().getLocation() );
+		fullFrame.setUndecorated( true );
+		fullFrame.setExtendedState( Frame.MAXIMIZED_BOTH );
 		VideoField outFull = new VideoField( monitorArray[1].getDefaultConfiguration().getBounds().getSize() );
 		fullFrame.getContentPane().add( outFull );
 		fullFrame.setVisible( true );
