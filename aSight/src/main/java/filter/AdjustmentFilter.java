@@ -35,7 +35,6 @@ public class AdjustmentFilter extends AbstractFilter {
 		return img;
 	}
 
-	@Override
 	public void createGUI( Container parentBox ) {
 		// JLabel
 		JLabel filterLabel = new JLabel( "~~~ Adjustment ~~~" );

@@ -8,6 +8,9 @@ import java.awt.GraphicsEnvironment;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import java.awt.Dimension;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import filter.*;
@@ -15,8 +18,8 @@ import java.util.ArrayList;
 
 public class Gui {
 
-	private JFrame frame;
-	private VideoField in, out;
+	private JFrame frame, videoFrame;
+	private VideoField in, out, outFull, outUsed;
 	private Main application;
 
 	/**
@@ -67,6 +70,15 @@ public class Gui {
 		frame.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
 		frame.getContentPane().setLayout( null );
 
+		final GraphicsDevice[] monitorArray = GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices();
+		videoFrame = new JFrame( "Fullscreen Display" );
+		videoFrame.setLocation( monitorArray[1].getDefaultConfiguration().getBounds().getLocation() );
+		videoFrame.setUndecorated( true );
+		videoFrame.setExtendedState( Frame.MAXIMIZED_BOTH );
+		outFull = new VideoField( monitorArray[1].getDefaultConfiguration().getBounds().getSize() );
+		videoFrame.getContentPane().add( outFull );
+		videoFrame.setVisible( false );		
+		
 		// absolute positioning: all x, y, w and h are multiples of 8!
 		// default line height: 24
 
@@ -79,14 +91,16 @@ public class Gui {
 		in.setBounds( 0, 0, 320, 240 );
 		inPanel.add( in );
 
-		JComboBox<Integer> inComboBox = new JComboBox<Integer>( application.getCountInputDevices() );
-		inComboBox.setBounds( 74, 248, 120, 24 );
-		inPanel.add( inComboBox );
+		
 
 		JLabel inLabel = new JLabel( "In Channel: " );
-		inLabel.setBounds( 8, 248, 64, 24 );
+		inLabel.setBounds( 8, 248, 80, 24 );
 		inPanel.add( inLabel );
-
+		
+		JComboBox<Integer> inComboBox = new JComboBox<Integer>( application.getCountInputDevices() );
+		inComboBox.setBounds( 88, 248, 120, 24 );
+		inPanel.add( inComboBox );
+		
 		JPanel filterPanel = new JPanel();
 		filterPanel.setBounds( 320, 0, 360, 672 );
 		frame.getContentPane().add( filterPanel );
@@ -124,28 +138,44 @@ public class Gui {
 		frame.getContentPane().add( outPanel );
 		outPanel.setLayout( null );
 
-		VideoField out = new VideoField( new Dimension( 320, 240 ) );
+		final VideoField out = new VideoField( new Dimension( 320, 240 ) );
 		out.setBounds( 0, 0, 320, 240 );
-		outPanel.add( out );
-
-		JComboBox<Integer> outComboBox = new JComboBox<Integer>( application.getCountOutputDevices() );
-		outComboBox.setBounds( 80, 248, 120, 24 );
-		outPanel.add( outComboBox );
+		outPanel.add( out );		
 
 		JLabel outLabel = new JLabel( "Out Channel: " );
-		outLabel.setBounds( 8, 248, 72, 24 );
+		outLabel.setBounds( 8, 248, 80, 24 );
 		outPanel.add( outLabel );
+		
+		outUsed = out;
+		final InputStream i = new InputStream( in, application, outUsed );
+		
+		final JComboBox<Integer> outComboBox = new JComboBox<Integer>( application.getCountOutputDevices() );
+		outComboBox.setBounds( 88, 248, 120, 24 );
+		outComboBox.addItemListener( new ItemListener() {
 
-		GraphicsDevice[] monitorArray = GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices();
-		JFrame fullFrame = new JFrame( "Fullscreen Display" );
-		fullFrame.setLocation( monitorArray[1].getDefaultConfiguration().getBounds().getLocation() );
-		fullFrame.setUndecorated( true );
-		fullFrame.setExtendedState( Frame.MAXIMIZED_BOTH );
-		VideoField outFull = new VideoField( monitorArray[1].getDefaultConfiguration().getBounds().getSize() );
-		fullFrame.getContentPane().add( outFull );
-		fullFrame.setVisible( true );
+			public void itemStateChanged( ItemEvent e ) {
+				int itemId = outComboBox.getSelectedIndex();
+				if ( itemId >= 0 ) {
+					if ( itemId == 0 ) {
+						outUsed = out;
+						videoFrame.setVisible( false );
+					} else {
+						outUsed = outFull;
+						videoFrame.setLocation( monitorArray[itemId-1].getDefaultConfiguration().getBounds()
+								.getLocation() );
+						videoFrame.setExtendedState( Frame.MAXIMIZED_BOTH );
+						outFull.changeSize( ( monitorArray[itemId-1].getDefaultConfiguration().getBounds().getSize() ) );
+						videoFrame.setVisible( true );
+					}
+					i.setTarget2( outUsed );
+				}
+			}
+		} );
 
-		InputStream i = new InputStream( in, application, outFull );
+		outPanel.add( outComboBox );
+
+		
+
 		i.start();
 
 	}

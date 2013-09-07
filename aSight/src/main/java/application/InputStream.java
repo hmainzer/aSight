@@ -17,7 +17,30 @@ public class InputStream extends Thread {
 		this.application = application;
 	}
 
-	@Override
+	
+	
+	public VideoField getTarget1() {
+		return target1;
+	}
+
+
+
+	public void setTarget1( VideoField target1 ) {
+		this.target1 = target1;
+	}
+
+
+
+	public VideoField getTarget2() {
+		return target2;
+	}
+
+
+
+	public void setTarget2( VideoField target2 ) {
+		this.target2 = target2;
+	}
+
 	public void run() {
 		Robot robot;
 		try {

@@ -22,6 +22,11 @@ public class VideoField extends JComponent {
 		setSize( mySize );
 	}
 
+	public void changeSize( Dimension size ) {
+		mySize = size;
+		setSize( mySize );
+	}
+
 	public synchronized void paint( Graphics g ) {
 		if ( myImage != null ) {
 			g.drawImage( myImage, 0, 0, this );
@@ -29,8 +34,8 @@ public class VideoField extends JComponent {
 	}
 
 	public void setImage( BufferedImage image ) {
-		Dimension imgDim = new Dimension( image.getHeight( null ), image.getWidth( null ) );
-		if ( !imgDim.equals( mySize ) ) {			
+		Dimension imgDim = new Dimension( image.getHeight(), image.getWidth() );
+		if ( !imgDim.equals( mySize ) ) {
 			image = application.Utility.resize( image, mySize.width, mySize.height );
 		}
 		SwingUtilities.invokeLater( new ImageRunnable( image ) );
@@ -45,8 +50,8 @@ public class VideoField extends JComponent {
 		}
 
 		public void run() {
-			VideoField.this.myImage = newImage;			
-			repaint();			
+			VideoField.this.myImage = newImage;
+			repaint();
 		}
 	}
 

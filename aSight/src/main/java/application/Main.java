@@ -15,13 +15,11 @@ public class Main {
 		ArrayList<filter.Filter> filterList = new ArrayList<filter.Filter>();
 		filterList.add( new AdjustmentFilter(100, 100, 1280, 1024 ) );
 		filterList.add( new ZoomFilter() );
-		filterList.add( new TestFilter() );
+		filterList.add( new TestFilter() );		
 		
 		filter.ContentLayer cl = new filter.ContentLayer();
 		filterList.add( cl );
 		
-		//filterList.get( 1 ).setActive( true );
-		//filterList.get( 2 ).setActive( true ); //%%
 		Gui.createGui( new Main(filterList, filterList.get( 0 ), cl) );
 	}	
 	
@@ -53,6 +51,7 @@ public class Main {
 	
 	public Vector<Integer> getCountOutputDevices(){
 		Vector<Integer> v = new Vector<Integer>();
+		v.add( 0 );
 		v.add( 1 );
 		v.add( 2 );
 		return v;
