@@ -58,7 +58,7 @@ public class ZoomFilter extends AbstractFilter {
 					}
 					faktor = value;
 					faktorSpinner.setValue( faktor );
-				}				
+				}
 			}
 		} );
 		parentBox.add( faktorSpinner );

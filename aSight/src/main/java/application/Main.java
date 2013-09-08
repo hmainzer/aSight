@@ -1,5 +1,7 @@
 package application;
 
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Vector;
@@ -45,15 +47,19 @@ public class Main {
 
 	public Vector<Integer> getCountInputDevices() {
 		Vector<Integer> v = new Vector<Integer>();
+		v.add( 0 );
 		v.add( 1 );
+		v.add( 2 );
 		return v;
 	}
 
 	public Vector<Integer> getCountOutputDevices() {
 		Vector<Integer> v = new Vector<Integer>();
+		GraphicsDevice[] monitorArray = GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices();
 		v.add( 0 );
-		v.add( 1 );
-		v.add( 2 );
+		for ( int i = 1; i <= monitorArray.length; i++ ){
+			v.add( i );
+		}
 		return v;
 	}
 
