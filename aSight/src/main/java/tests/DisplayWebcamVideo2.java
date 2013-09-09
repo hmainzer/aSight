@@ -1,5 +1,3 @@
-package tests;
-
 /*******************************************************************************
  * Copyright (c) 2008, 2010 Xuggle Inc.  All rights reserved.
  *  
@@ -17,12 +15,14 @@ package tests;
  *
  * You should have received a copy of the GNU Lesser General Public License
  * along with Xuggle-Xuggler-Main.  If not, see <http://www.gnu.org/licenses/>.
- *******************************************************************************/
-
+ ****************************************************************************/
+package tests;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.color.ColorSpace;
 import java.awt.image.BufferedImage;
+import java.awt.image.ColorConvertOp;
 
 import com.xuggle.xuggler.ICodec;
 import com.xuggle.xuggler.IContainer;
@@ -35,6 +35,7 @@ import com.xuggle.xuggler.IStream;
 import com.xuggle.xuggler.IStreamCoder;
 import com.xuggle.xuggler.IVideoPicture;
 import com.xuggle.xuggler.IVideoResampler;
+import com.xuggle.xuggler.Utils;
 import com.xuggle.xuggler.demos.VideoImage;
 import com.xuggle.xuggler.video.ConverterFactory;
 import com.xuggle.xuggler.video.IConverter;
@@ -92,7 +93,7 @@ public class DisplayWebcamVideo2
    *   (which is dependent on the FFMPEG driver).
    */
   @SuppressWarnings("deprecation")
-public static void main(String[] args)
+  public static void main(String[] args)
   {
     if (args.length != 2)
       throw new IllegalArgumentException("must pass in driver and device name");
@@ -119,7 +120,7 @@ public static void main(String[] args)
     IMetaData params = IMetaData.make();
     
     params.setValue("framerate", "30/1");
-    params.setValue("video_size", "320x240");    
+    params.setValue("video_size", "640x480");    
 
     // Open up the container
     int retval = container.open(deviceName, IContainer.Type.READ, format,
@@ -172,6 +173,8 @@ public static void main(String[] args)
       if (resampler == null)
         throw new RuntimeException("could not create color space resampler for: " + deviceName);
     }
+    System.out.println(ConverterFactory.getRegisteredConverters());
+    IConverter c = ConverterFactory.createConverter( "XUGGLER-BGR-24", IPixelFormat.Type.BGR24, 640, 480);
     /*
      * And once we have that, we draw a window on screen
      */
@@ -179,7 +182,7 @@ public static void main(String[] args)
 
     /*
      * Now, we start walking through the container looking at each packet.
-     */    
+     */
     IPacket packet = IPacket.make();
     while(container.readNextPacket(packet) >= 0)
     {
@@ -193,8 +196,9 @@ public static void main(String[] args)
          */
         IVideoPicture picture = IVideoPicture.make(videoCoder.getPixelType(),
             videoCoder.getWidth(), videoCoder.getHeight());
-        IConverter c = ConverterFactory.createConverter( "test1", picture);
-        int offset = 0;        
+        
+        
+        int offset = 0;
         while(offset < packet.getSize())
         {
           /*
@@ -214,7 +218,6 @@ public static void main(String[] args)
           if (picture.isComplete())
           {
             IVideoPicture newPic = picture;
-            
             /*
              * If the resampler is not null, that means we didn't get the video in BGR24 format and
              * need to convert it into BGR24 format.
@@ -230,16 +233,21 @@ public static void main(String[] args)
               throw new RuntimeException("could not decode video as BGR 24 bit data in: " + deviceName);
 
             // Convert the BGR24 to an Java buffered image
-            //BufferedImage javaImage = Utils.videoPictureToImage(newPic);           
-            BufferedImage javaImage = c.toImage(newPic);
-            // modify
-            Graphics2D graph = javaImage.createGraphics();
-            graph.setColor( Color.black );
-            graph.fillRect(2, 2, 20, 40);
+            BufferedImage javaImage = c.toImage( newPic ); 
             
+            //Utils.videoPictureToImage(newPic);
+            ColorConvertOp op = new ColorConvertOp( ColorSpace.getInstance( ColorSpace.CS_GRAY ), null);
+            op.filter( javaImage, javaImage );
+            
+         // modify
+           // Graphics2D graph = javaImage.createGraphics();
+           // graph.setColor( Color.black );
+           // for ( int x = 0; x < 10; x++ ){
+           // graph.fillRect((int)(Math.random()*640), (int)(Math.random()*480), (int)(Math.random()*640), (int)(Math.random()*480));
+           // }
             // and display it on the Java Swing window
             updateJavaWindow(javaImage);
-          }
+          }          
         }
       }
       else
@@ -299,5 +307,3 @@ public static void main(String[] args)
   }
 
 }
-
-
