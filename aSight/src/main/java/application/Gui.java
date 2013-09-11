@@ -145,6 +145,7 @@ public class Gui {
 		outPanel.add( outLabel );
 
 		outUsed = out;
+		//final InputStream i = new InputStreamCamera( in, application, outUsed );
 		final InputStream i = new InputStream( in, application, outUsed );
 
 		final JComboBox<Integer> outComboBox = new JComboBox<Integer>( application.getCountOutputDevices() );

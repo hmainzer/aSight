@@ -8,8 +8,8 @@ import java.awt.image.BufferedImage;
 
 public class InputStream extends Thread {
 
-	private VideoField target1, target2;
-	private Main application;
+	protected VideoField target1, target2;
+	protected Main application;
 
 	public InputStream( VideoField target1, Main application, VideoField target2 ) {
 		this.target1 = target1;

@@ -5,7 +5,7 @@ import java.awt.image.BufferedImage;
 public abstract class InformationContent {
 
 	
-	private int timeout;
+	private int timeout;	
 	private final Filter parent;
 	private int id;
 

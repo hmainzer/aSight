@@ -14,12 +14,13 @@ public class Main {
 	private filter.ContentLayer contentLayer;
 
 	public static void main( String[] args ) {
+		filter.ContentLayer cl = new filter.ContentLayer();
 		ArrayList<filter.Filter> filterList = new ArrayList<filter.Filter>();
 		filterList.add( new AdjustmentFilter( 100, 100, 1280, 1024 ) );
 		filterList.add( new ZoomFilter() );
-		filterList.add( new TestFilter() );
+		filterList.add( new TestFilter(cl) );
 
-		filter.ContentLayer cl = new filter.ContentLayer();
+		
 		filterList.add( cl );
 
 		Gui.createGui( new Main( filterList, filterList.get( 0 ), cl ) );

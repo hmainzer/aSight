@@ -12,7 +12,7 @@ import javax.swing.event.ChangeListener;
 public class AdjustmentFilter extends AbstractFilter {
 
 	private int x, y, width, height;
-	private JSpinner xSpinner, ySpinner;
+	private JSpinner xSpinner, ySpinner, wSpinner, hSpinner;
 
 	public AdjustmentFilter( int x, int y, int width, int height ) {
 		this.x = x;
@@ -23,6 +23,12 @@ public class AdjustmentFilter extends AbstractFilter {
 
 	@Override
 	protected BufferedImage action( BufferedImage img ) {
+		if ( width > img.getWidth() ) {
+			width = img.getWidth();
+		}
+		if ( height > img.getHeight() ) {
+			height = img.getHeight();
+		}
 		if ( y + height > img.getHeight() ) {
 			y = img.getHeight() - height;
 			ySpinner.setValue( y );
@@ -96,10 +102,56 @@ public class AdjustmentFilter extends AbstractFilter {
 			}
 		} );
 		parentBox.add( ySpinner );
+
+		// JLabel
+		JLabel wLabel = new JLabel( "w: " );
+		wLabel.setBounds( 8, 104, 16, 24 );
+		parentBox.add( wLabel );
+
+		// JSpinner
+		wSpinner = new JSpinner();
+		wSpinner.setValue( width );
+		wSpinner.setBounds( 24, 104, 64, 24 );
+		wSpinner.addChangeListener( new ChangeListener() {
+			public void stateChanged( ChangeEvent e ) {
+				if ( wSpinner.getValue() instanceof Integer ) {
+					int value = (Integer) wSpinner.getValue();
+					if ( value < 0 ) {
+						value = 0;
+					}
+					width = value;
+					wSpinner.setValue( width );
+				}
+			}
+		} );
+		parentBox.add( wSpinner );
+
+		// JLabel
+		JLabel hLabel = new JLabel( "h: " );
+		hLabel.setBounds( 96, 104, 16, 24 );
+		parentBox.add( hLabel );
+
+		// JSpinner
+		hSpinner = new JSpinner();
+		hSpinner.setValue( height );
+		hSpinner.setBounds( 112, 104, 64, 24 );
+		hSpinner.addChangeListener( new ChangeListener() {
+			public void stateChanged( ChangeEvent e ) {
+				if ( hSpinner.getValue() instanceof Integer ) {
+					int value = (Integer) hSpinner.getValue();
+					if ( value < 0 ) {
+						value = 0;
+					}
+					height = value;
+					hSpinner.setValue( height );
+				}
+			}
+		} );
+		parentBox.add( hSpinner );
 	}
 
 	public int getGUIHeigth() {
-		return 3;
+		return 4;
 	}
 
 }

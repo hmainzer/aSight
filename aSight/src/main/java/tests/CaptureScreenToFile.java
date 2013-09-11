@@ -75,12 +75,12 @@ public class CaptureScreenToFile {
 				// take the screen shot
 				BufferedImage screen = robot.createScreenCapture( screenBounds );
 
-				Graphics2D graph = screen.createGraphics();
+				/*Graphics2D graph = screen.createGraphics();
 				filter.Filter filter = new filter.TestFilter();
 				filter.setActive( (int) ( Math.random() * 10 ) > 5 );
 
 				filter.useFilter( screen );
-
+*/
 				// convert to the right image type
 				BufferedImage bgrScreen = convertToType( screen, BufferedImage.TYPE_3BYTE_BGR );
 
