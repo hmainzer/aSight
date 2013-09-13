@@ -15,19 +15,20 @@ public class ContentLayer extends AbstractFilter {
 		super.setActive( true );
 	}
 
+	// action() - calls all active InformationContents to draw and reduces their timeout
 	protected BufferedImage action( BufferedImage img ) {
 		Set<Filter> keys = contentByFilter.keySet();
 		Set<Integer> keys2;
 		Map<Integer, InformationContent> map;
 		InformationContent c;
-		for( Filter f : keys ){
+		for ( Filter f : keys ) {
 			map = contentByFilter.get( f );
 			keys2 = map.keySet();
-			for( Integer i : keys2 ){
+			for ( Integer i : keys2 ) {
 				c = map.get( i );
 				c.paintContent( img );
-				c.setTimeout( c.getTimeout()-1 );
-				if ( c.getTimeout() == 0 ){
+				c.setTimeout( c.getTimeout() - 1 );
+				if ( c.getTimeout() == 0 ) {
 					map.remove( i );
 				}
 			}
@@ -35,7 +36,8 @@ public class ContentLayer extends AbstractFilter {
 		return img;
 	}
 
-	public int giveContent( Filter f, InformationContent c ) {
+	// giveContent() - gives the filter an InformationContent object to call for drawing
+	public synchronized int giveContent( Filter f, InformationContent c ) {
 		Map<Integer, InformationContent> map = getOrCreateFilterEntry( f );
 		int id = ids++;
 		map.put( id, c );
@@ -43,6 +45,7 @@ public class ContentLayer extends AbstractFilter {
 		return id;
 	}
 
+	// getOrCreateFilterEntry() - gives back an map object for the content of f
 	private Map<Integer, InformationContent> getOrCreateFilterEntry( Filter f ) {
 		Map<Integer, InformationContent> map;
 		map = contentByFilter.get( f );
@@ -53,38 +56,59 @@ public class ContentLayer extends AbstractFilter {
 		return map;
 	}
 
-	public boolean getIdActive( Filter f, int id){
+	// getIdActive() - returns if a id still exists within the contents of f
+	public boolean getIdActive( Filter f, int id ) {
 		Map<Integer, InformationContent> map = contentByFilter.get( f );
-		if ( map == null ){
+		if ( map == null ) {
 			return false;
 		}
 		InformationContent c = map.get( id );
 		return c != null;
 	}
-	
-	public InformationContent getInformationContent( Filter f, int id ){
+
+	// getInformationContent() - returns the Information content with id of f
+	public InformationContent getInformationContent( Filter f, int id ) {
 		Map<Integer, InformationContent> map = contentByFilter.get( f );
-		if ( map == null ){
+		if ( map == null ) {
 			return null;
 		}
 		InformationContent c = map.get( id );
 		return c;
 	}
-	
-	public boolean getAnyActiveOfFilter( Filter f ){
+
+	// getAnyActiveOfFilter() - returns true if the filter has any InformationContent Object
+	public boolean getAnyActiveOfFilter( Filter f ) {
 		Map<Integer, InformationContent> map = contentByFilter.get( f );
-		if ( map != null && map.size() > 0 ){
+		if ( map != null && map.size() > 0 ) {
 			return true;
 		}
 		return false;
 	}
-	
-	public Set<Integer> getIDsForFilter( Filter f ){
+
+	// getIDsForFilter() - returns a Set of all IDs used for f
+	public Set<Integer> getIDsForFilter( Filter f ) {
 		Map<Integer, InformationContent> map = contentByFilter.get( f );
-		if ( map == null ){
+		if ( map == null ) {
 			return null;
 		}
 		return map.keySet();
 	}
-	
+
+	// deleteContentOfFilter() - deletes a filter from the map and all his content with him
+	public void deleteContentOfFilter( Filter f ) {
+		contentByFilter.remove( f );
+	}
+
+	// setTimeoutForFilter() - sets the timeout for all InformationContents of f to t
+	public void setTimeoutForFilter( Filter f, int t ) {
+		Map<Integer, InformationContent> map;
+		map = contentByFilter.get( f );
+		if ( map != null ) {
+			Set<Integer> keys = map.keySet();
+			for ( Integer i : keys ) {
+				map.get( i ).setTimeout( t );
+			}
+		}
+	}
+
 }
