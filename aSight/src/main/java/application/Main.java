@@ -18,9 +18,9 @@ public class Main {
 		ArrayList<filter.Filter> filterList = new ArrayList<filter.Filter>();
 		filterList.add( new AdjustmentFilter( 100, 100, 1280, 1024 ) );
 		filterList.add( new ZoomFilter() );
-		filterList.add( new TestFilter(cl) );
+		filterList.add( new TestFilter( cl ) );
+		filterList.add( new CodeParaFilter( cl ).afterKonstrukt());
 
-		
 		filterList.add( cl );
 
 		Gui.createGui( new Main( filterList, filterList.get( 0 ), cl ) );
@@ -34,12 +34,10 @@ public class Main {
 
 	public ArrayList<filter.Filter> getFilter() {
 		return filterList;
-
 	}
 
 	public filter.Filter getAdjustmentFilter() {
 		return adjustmentFilter;
-
 	}
 
 	public filter.ContentLayer getContentLayer() {
@@ -58,7 +56,7 @@ public class Main {
 		Vector<Integer> v = new Vector<Integer>();
 		GraphicsDevice[] monitorArray = GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices();
 		v.add( 0 );
-		for ( int i = 1; i <= monitorArray.length; i++ ){
+		for ( int i = 1; i <= monitorArray.length; i++ ) {
 			v.add( i );
 		}
 		return v;

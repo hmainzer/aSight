@@ -1,12 +1,12 @@
 package filter;
 
 import java.awt.Container;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 
 public abstract class AbstractFilter implements Filter {
 
@@ -31,8 +31,8 @@ public abstract class AbstractFilter implements Filter {
 		// JCheckBox
 		final JCheckBox isActiveBox = new JCheckBox( "Activate" );
 		isActiveBox.setBounds( 8, 40, 120, 24 );
-		isActiveBox.addChangeListener( new ChangeListener() {
-			public void stateChanged( ChangeEvent e ) {
+		isActiveBox.addActionListener( new ActionListener() {
+			public void actionPerformed( ActionEvent arg0 ) {
 				AbstractFilter.this.setActive( isActiveBox.isSelected() );
 			}
 		} );

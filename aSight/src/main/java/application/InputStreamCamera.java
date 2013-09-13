@@ -25,7 +25,6 @@ public class InputStreamCamera extends InputStream {
 		// TODO Auto-generated constructor stub
 	}
 
-	@Override
 	public void run() {
 		String driverName = "vfwcap";
 		String deviceName = "0";

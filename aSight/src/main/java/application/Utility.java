@@ -11,4 +11,13 @@ public class Utility {
 		g.dispose();
 		return resizedImage;
 	}
+	
+	public static BufferedImage copy( BufferedImage img ){
+		int w = img.getWidth() , h = img.getHeight();
+		BufferedImage newImg = new BufferedImage( w, h, img.getType() );
+		Graphics2D g = newImg.createGraphics();
+		g.drawImage( img, 0, 0, w, h, null );
+		g.dispose();
+		return newImg;
+	}
 }
