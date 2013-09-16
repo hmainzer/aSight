@@ -1,5 +1,6 @@
 package application;
 
+import java.awt.Font;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.image.BufferedImage;
@@ -9,17 +10,24 @@ import filter.*;
 
 public class Main {
 
+	private static Font font = null;
+	
+	public static Font getFont(){
+		return font;
+	}
+	
 	private ArrayList<filter.Filter> filterList;
 	private filter.Filter adjustmentFilter;
 	private filter.ContentLayer contentLayer;
 
 	public static void main( String[] args ) {
+		// font
 		filter.ContentLayer cl = new filter.ContentLayer();
 		ArrayList<filter.Filter> filterList = new ArrayList<filter.Filter>();
 		filterList.add( new AdjustmentFilter( 100, 100, 1280, 1024 ) );
 		filterList.add( new ZoomFilter() );
 		filterList.add( new TestFilter( cl ) );
-		filterList.add( new CodeParaFilter( cl ).afterKonstrukt());
+		filterList.add( new CodeParaFilter( cl ) );
 
 		filterList.add( cl );
 

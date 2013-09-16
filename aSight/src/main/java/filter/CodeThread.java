@@ -26,10 +26,11 @@ import com.google.zxing.oned.EAN8Reader;
 
 public class CodeThread extends TimerTask{
 	boolean readQR = true;
-	boolean readBar39 = true;
+/*	boolean readBar39 = true;
 	boolean readBar128 = true;
 	boolean readEan8 = true;
-	boolean readEan13 = true;
+	boolean readEan13 = true;*/
+	boolean readBar = true;
 	boolean activated;
 	Timer timer;
 	
@@ -62,8 +63,15 @@ public class CodeThread extends TimerTask{
 		this.activated = act;
 	}
 	
+	public void setReadbar(boolean read){
+		this.readBar = read;
+	}
+	
+	public void setReadQR(boolean read){
+		this.readQR = read;
+	}
+	
 	public void run() {
-
 		if (activated){
 		try {
 			BufferedImage img = imgAccess.read();
@@ -84,7 +92,7 @@ public class CodeThread extends TimerTask{
 				} catch (NotFoundException e) {}
 			}
 			
-			if (readBar39) {
+			if (readBar) {
 				try {
 					result = code39Reader.decodeMultiple(bitmap, decodeHints);
 					for (Result tempResult : result) {
@@ -92,9 +100,7 @@ public class CodeThread extends TimerTask{
 					}
 				} catch (NotFoundException e) {
 				}
-			}
 
-			if (readEan8) {
 				try {
 					result = code128Reader.decodeMultiple(bitmap, decodeHints);
 					for (Result tempResult : result) {
@@ -102,9 +108,6 @@ public class CodeThread extends TimerTask{
 					}
 				} catch (NotFoundException e) {
 				}
-			}
-				
-			if (readEan13){
 				try {
 					result = ean13Reader.decodeMultiple(bitmap, decodeHints);
 					for (Result tempResult : result) {

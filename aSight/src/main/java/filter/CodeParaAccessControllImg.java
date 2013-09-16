@@ -11,15 +11,14 @@ public class CodeParaAccessControllImg {
 	
 	public BufferedImage read() throws CodeParaNoObjectYetException{
 		beforeRead();
-		BufferedImage returnImg = new BufferedImage(img.getColorModel(), img.copyData(null), img.isAlphaPremultiplied(), null);
+		BufferedImage returnImg = img;
 		afterRead();
 		return returnImg;
 	}
 
 	public void write(BufferedImage img){
 		beforeWrite();
-		//this.img = new BufferedImage(img.getColorModel(), img.copyData(null), img.isAlphaPremultiplied(), null);;
-		this.img = application.Utility.copy( img );
+		this.img = application.Utility.copy(img);
 		afterWrite();
 	}
 	
