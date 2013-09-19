@@ -110,7 +110,7 @@ public class InputStreamCamera extends InputStream {
 		 * Now, we start walking through the container looking at each packet.
 		 */
 		IPacket packet = IPacket.make();
-		while ( container.readNextPacket( packet ) >= 0 ) {
+		while ( container.readNextPacket( packet ) >= 0 && !end ) {
 			/*
 			 * Now we have a packet, let's see if it belongs to our video stream
 			 */
@@ -122,7 +122,7 @@ public class InputStreamCamera extends InputStream {
 						videoCoder.getHeight() );
 
 				int offset = 0;
-				while ( offset < packet.getSize() ) {
+				while ( offset < packet.getSize() && !end ) {
 					/*
 					 * Now, we decode the video, checking for any errors.
 					 */

@@ -5,9 +5,12 @@ import java.awt.Frame;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 
@@ -21,6 +24,7 @@ public class Gui {
 	private JFrame frame, videoFrame;
 	private VideoField in, out, outFull, outUsed;
 	private Main application;
+	private InputStream i;
 
 	/**
 	 * Launch the application.
@@ -66,7 +70,7 @@ public class Gui {
 		frame = new JFrame();
 		frame.setTitle( "aSight" );
 		frame.setResizable( false );
-		frame.setBounds( 100, 100, 1000, 700 );
+		frame.setBounds( 100, 100, 800, 580 );
 		frame.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
 		frame.getContentPane().setLayout( null );
 
@@ -83,24 +87,34 @@ public class Gui {
 		// default line height: 24
 
 		JPanel inPanel = new JPanel();
-		inPanel.setBounds( 0, 0, 320, 672 );
+		inPanel.setBounds( 0, 0, 310, 552 );
 		frame.getContentPane().add( inPanel );
 		inPanel.setLayout( null );
 
-		VideoField in = new VideoField( new Dimension( 320, 240 ) );
-		in.setBounds( 0, 0, 320, 240 );
+		final VideoField in = new VideoField( new Dimension( 310, 240 ) );
+		in.setBounds( 0, 0, 310, 240 );
 		inPanel.add( in );
 
 		JLabel inLabel = new JLabel( "In Channel: " );
 		inLabel.setBounds( 8, 248, 80, 24 );
 		inPanel.add( inLabel );
-
-		JComboBox<Integer> inComboBox = new JComboBox<Integer>( application.getCountInputDevices() );
-		inComboBox.setBounds( 88, 248, 120, 24 );
-		inPanel.add( inComboBox );
+		/*
+		 * JComboBox<Integer> inComboBox = new JComboBox<Integer>(
+		 * application.getCountInputDevices() ); inComboBox.setBounds( 88, 248,
+		 * 120, 24 ); inPanel.add( inComboBox );
+		 */
+		JButton changeInput = new JButton( "Change Input" );
+		changeInput.setBounds( 88, 248, 120, 24 );
+		changeInput.addActionListener( new ActionListener() {
+			public void actionPerformed( ActionEvent arg0 ) {
+				i.end();
+				i = new InputStreamCamera( in, application, outUsed );
+			}
+		} );
+		inPanel.add( changeInput );
 
 		JPanel filterPanel = new JPanel();
-		filterPanel.setBounds( 320, 0, 360, 672 );
+		filterPanel.setBounds( 310, 0, 180, 552 );
 		frame.getContentPane().add( filterPanel );
 		filterPanel.setLayout( null );
 
@@ -115,10 +129,9 @@ public class Gui {
 					if ( ( sumHeightPx + height * 24 + ( height + 1 ) * 8 ) > 672 ) {
 						if ( y == 180 ) {
 							System.err.println( "to many filters!!!!" );
-						} else {
-							y = 180;
-							sumHeightPx = 0;
-						}
+						} /*
+						 * else { y = 180; sumHeightPx = 0; }
+						 */
 					}
 					JPanel container = new JPanel();
 					container.setBounds( y, sumHeightPx, 180, height * 24 + ( height + 1 ) * 8 );
@@ -132,12 +145,12 @@ public class Gui {
 		}
 
 		JPanel outPanel = new JPanel();
-		outPanel.setBounds( 680, 0, 320, 672 );
+		outPanel.setBounds( 490, 0, 310, 552 );
 		frame.getContentPane().add( outPanel );
 		outPanel.setLayout( null );
 
-		final VideoField out = new VideoField( new Dimension( 320, 240 ) );
-		out.setBounds( 0, 0, 320, 240 );
+		final VideoField out = new VideoField( new Dimension( 310, 240 ) );
+		out.setBounds( 0, 0, 310, 240 );
 		outPanel.add( out );
 
 		JLabel outLabel = new JLabel( "Out Channel: " );
@@ -145,8 +158,9 @@ public class Gui {
 		outPanel.add( outLabel );
 
 		outUsed = out;
-		//final InputStream i = new InputStreamCamera( in, application, outUsed );
-		final InputStream i = new InputStream( in, application, outUsed );
+		// final InputStream i = new InputStreamCamera( in, application, outUsed
+		// );
+		i = new InputStream( in, application, outUsed );
 
 		final JComboBox<Integer> outComboBox = new JComboBox<Integer>( application.getCountOutputDevices() );
 		outComboBox.setBounds( 88, 248, 120, 24 );

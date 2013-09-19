@@ -10,6 +10,7 @@ public class InputStream extends Thread {
 
 	protected VideoField target1, target2;
 	protected Main application;
+	protected boolean end = false;
 
 	public InputStream( VideoField target1, Main application, VideoField target2 ) {
 		this.target1 = target1;
@@ -40,7 +41,7 @@ public class InputStream extends Thread {
 
 			final Toolkit toolkit = Toolkit.getDefaultToolkit();
 			final Rectangle screenBounds = new Rectangle( toolkit.getScreenSize() );
-			while ( true ) {
+			while ( !end ) {
 				BufferedImage screen = robot.createScreenCapture( screenBounds );
 				target1.setImage( screen );
 				application.applyFilters( screen, target2 );
@@ -58,4 +59,7 @@ public class InputStream extends Thread {
 		super.run();
 	}
 
+	public void end(){
+		end = true;
+	}
 }
