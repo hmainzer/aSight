@@ -22,15 +22,16 @@ public class Main {
 
 	public static void main( String[] args ) {
 		// font
+		font = new Font("Arial", Font.PLAIN, 24);
 		filter.ContentLayer cl = new filter.ContentLayer();
 		ArrayList<filter.Filter> filterList = new ArrayList<filter.Filter>();
-		filterList.add( new AdjustmentFilter( 100, 100, 1280, 1024 ) );
+		filterList.add( new AdjustmentFilter( 0, 0, 800, 600 ) );
 		filterList.add( new ZoomFilter() );
-		filterList.add( new TestFilter( cl ) );
+		filterList.add( new PictureSearchFilter( cl ) );
 		filterList.add( new CodeParaFilter( cl ) );
 
 		filterList.add( cl );
-
+		cl.setFilterList(filterList);
 		Gui.createGui( new Main( filterList, filterList.get( 0 ), cl ) );
 	}
 

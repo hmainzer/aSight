@@ -70,18 +70,21 @@ public class Gui {
 		frame = new JFrame();
 		frame.setTitle( "aSight" );
 		frame.setResizable( false );
-		frame.setBounds( 100, 100, 800, 580 );
+		frame.setBounds(0, 0, 800, 580);
 		frame.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
-		frame.getContentPane().setLayout( null );
+		frame.getContentPane().setLayout(null);
 
-		final GraphicsDevice[] monitorArray = GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices();
-		videoFrame = new JFrame( "Fullscreen Display" );
-		videoFrame.setLocation( monitorArray[1].getDefaultConfiguration().getBounds().getLocation() );
-		videoFrame.setUndecorated( true );
-		videoFrame.setExtendedState( Frame.MAXIMIZED_BOTH );
-		outFull = new VideoField( monitorArray[1].getDefaultConfiguration().getBounds().getSize() );
-		videoFrame.getContentPane().add( outFull );
-		videoFrame.setVisible( false );
+		final GraphicsDevice[] monitorArray = GraphicsEnvironment
+				.getLocalGraphicsEnvironment().getScreenDevices();
+		videoFrame = new JFrame("Fullscreen Display");
+		videoFrame.setLocation(monitorArray[0].getDefaultConfiguration()
+				.getBounds().getLocation());
+		videoFrame.setUndecorated(true);
+		videoFrame.setExtendedState(Frame.MAXIMIZED_BOTH);
+		outFull = new VideoField(monitorArray[0].getDefaultConfiguration()
+				.getBounds().getSize());
+		videoFrame.getContentPane().add(outFull);
+		videoFrame.setVisible(false);
 
 		// absolute positioning: all x, y, w and h are multiples of 8!
 		// default line height: 24
@@ -108,7 +111,9 @@ public class Gui {
 		changeInput.addActionListener( new ActionListener() {
 			public void actionPerformed( ActionEvent arg0 ) {
 				i.end();
-				i = new InputStreamCamera( in, application, outUsed );
+				//i = new InputStreamCamera( in, application, outUsed );
+				i = new InputStream( in, application, outUsed );
+				i.start();
 			}
 		} );
 		inPanel.add( changeInput );
@@ -158,8 +163,7 @@ public class Gui {
 		outPanel.add( outLabel );
 
 		outUsed = out;
-		// final InputStream i = new InputStreamCamera( in, application, outUsed
-		// );
+		//i = new InputStreamCamera(in, application, outUsed);
 		i = new InputStream( in, application, outUsed );
 
 		final JComboBox<Integer> outComboBox = new JComboBox<Integer>( application.getCountOutputDevices() );

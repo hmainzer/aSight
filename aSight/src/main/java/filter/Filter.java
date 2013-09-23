@@ -13,4 +13,6 @@ public interface Filter {
 	public void setActive( boolean act );
 
 	public boolean isActive();
+	
+	public boolean needsRealPicture();
 }

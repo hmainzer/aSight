@@ -22,7 +22,7 @@ public class TestFilter extends AbstractFilter {
 		 * ); graphic.dispose();
 		 */
 		if ( actOnce ) {
-			InformationContent c = new TestStringContent( 60, this, "Hallo Welt", (int) ( Math.random() * 500 ),
+			InformationContent c = new StringContent( 60, this, "Hallo Welt", (int) ( Math.random() * 500 ),
 					(int) ( Math.random() * 500 ), Color.green );
 			int i = cLayer.giveContent( this, c );
 			actOnce = false;

@@ -11,13 +11,14 @@ import javax.swing.event.ChangeListener;
 
 public class ZoomFilter extends AbstractFilter {
 
-	private int faktor = 1;
+	private int faktor = 100;
 
-	protected BufferedImage action( BufferedImage img ) {
-		int oldW = img.getWidth();
+	protected BufferedImage action( BufferedImage img ) {		
+		float f = faktor / 100f;
+		int oldW = img.getWidth();		
 		int oldH = img.getHeight();
-		int w = oldW / faktor;
-		int h = oldH / faktor;
+		int w = (int) ( oldW / f );
+		int h = (int) ( oldH / f );
 		int x = ( oldW - w ) / 2;
 		int y = ( oldH - h ) / 2;
 		img = application.Utility.resize( img.getSubimage( x, y, w, h ), oldW, oldH );
@@ -41,7 +42,7 @@ public class ZoomFilter extends AbstractFilter {
 		parentBox.add( isActiveBox );
 
 		// JLabel
-		JLabel faktorLabel = new JLabel( "Factor: " );
+		JLabel faktorLabel = new JLabel( "Factor (%): " );
 		faktorLabel.setBounds( 8, 72, 60, 24 );
 		parentBox.add( faktorLabel );
 
@@ -53,10 +54,10 @@ public class ZoomFilter extends AbstractFilter {
 			public void stateChanged( ChangeEvent e ) {
 				if ( faktorSpinner.getValue() instanceof Integer ) {
 					int value = (Integer) faktorSpinner.getValue();
-					if ( value > 10 ) {
-						value = 10;
-					} else if ( value < 1 ) {
-						value = 1;
+					if ( value > 1000 ) {
+						value = 1000;
+					} else if ( value < 100 ) {
+						value = 100;
 					}
 					faktor = value;
 					faktorSpinner.setValue( faktor );
@@ -70,4 +71,7 @@ public class ZoomFilter extends AbstractFilter {
 		return 3;
 	}
 
+	public boolean needsRealPicture() {
+		return true;
+	}
 }

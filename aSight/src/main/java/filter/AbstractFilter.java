@@ -50,5 +50,9 @@ public abstract class AbstractFilter implements Filter {
 	public boolean isActive() {
 		return active;
 	}
+	
+	public boolean needsRealPicture(){
+		return false;
+	}
 
 }

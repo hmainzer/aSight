@@ -158,8 +158,8 @@ public class InputStreamCamera extends InputStream {
 						BufferedImage javaImage = c.toImage( newPic );
 
 						// Utils.videoPictureToImage(newPic);
-						ColorConvertOp op = new ColorConvertOp( ColorSpace.getInstance( ColorSpace.CS_GRAY ), null );
-						op.filter( javaImage, javaImage );
+						//ColorConvertOp op = new ColorConvertOp( ColorSpace.getInstance( ColorSpace.CS_GRAY ), null );
+						//op.filter( javaImage, javaImage );
 
 						// modify
 						// Graphics2D graph = javaImage.createGraphics();

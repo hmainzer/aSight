@@ -59,7 +59,7 @@ public class InputStream extends Thread {
 		super.run();
 	}
 
-	public void end(){
+	public void end() {
 		end = true;
 	}
 }
