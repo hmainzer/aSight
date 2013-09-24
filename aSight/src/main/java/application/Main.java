@@ -11,18 +11,18 @@ import filter.*;
 public class Main {
 
 	private static Font font = null;
-	
-	public static Font getFont(){
+
+	public static Font getFont() {
 		return font;
 	}
-	
+
 	private ArrayList<filter.Filter> filterList;
 	private filter.Filter adjustmentFilter;
 	private filter.ContentLayer contentLayer;
 
 	public static void main( String[] args ) {
 		// font
-		font = new Font("Arial", Font.PLAIN, 24);
+		font = new Font( "Arial", Font.PLAIN, 24 );
 		filter.ContentLayer cl = new filter.ContentLayer();
 		ArrayList<filter.Filter> filterList = new ArrayList<filter.Filter>();
 		filterList.add( new AdjustmentFilter( 0, 0, 800, 600 ) );
@@ -31,7 +31,7 @@ public class Main {
 		filterList.add( new CodeParaFilter( cl ) );
 
 		filterList.add( cl );
-		cl.setFilterList(filterList);
+		cl.setFilterList( filterList );
 		Gui.createGui( new Main( filterList, filterList.get( 0 ), cl ) );
 	}
 

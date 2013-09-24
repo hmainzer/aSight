@@ -7,6 +7,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.util.*;
+import java.util.concurrent.Semaphore;
 
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
@@ -30,7 +31,7 @@ public class ContentLayer extends AbstractFilter {
 
 	// action() - calls all active InformationContents to draw and reduces their
 	// timeout
-	protected BufferedImage action( BufferedImage img ) {
+	protected synchronized BufferedImage action( BufferedImage img ) {
 		boolean realPic = false;
 		for ( Filter f : filter ) {
 			realPic = realPic || ( f.needsRealPicture() && f.isActive() );
@@ -47,43 +48,62 @@ public class ContentLayer extends AbstractFilter {
 		Set<Integer> keys2;
 		Map<Integer, InformationContent> map;
 		InformationContent c;
-		for ( Filter f : keys ) {
-			map = contentByFilter.get( f );
-			keys2 = map.keySet();
-			for ( Integer i : keys2 ) {
-				c = map.get( i );
-				img = c.paintContent( img );
-				c.setTimeout( c.getTimeout() - 1 );
-				if ( c.getTimeout() == 0 ) {
-					map.remove( i );
+		ArrayList<Integer> toDelete = null;
+		try {
+			for ( Filter f : keys ) {
+				map = contentByFilter.get( f );
+				keys2 = map.keySet();
+				for ( Integer i : keys2 ) {
+					c = map.get( i );
+					img = c.paintContent( img );
+					c.setTimeout( c.getTimeout() - 1 );
+					if ( c.getTimeout() == 0 ) {
+						if ( toDelete == null ) {
+							toDelete = new ArrayList<Integer>();
+						}
+						toDelete.add( i );
+						// map.remove( i );
+					}
+				}
+				if ( toDelete != null ) {
+					for ( Integer i : toDelete ) {
+						map.remove( i );
+					}
+					toDelete = null;
 				}
 			}
+		} catch ( ConcurrentModificationException ex ) {
 		}
+
 		return img;
 	}
 
 	public void createGUI( Container parentBox ) {
-		// JLabel
-		JLabel filterLabel = new JLabel( "~~~ Content Layer ~~~" );
-		filterLabel.setBounds( 8, 8, 164, 24 );
-		parentBox.add( filterLabel );
+		/*
+		 * // JLabel JLabel filterLabel = new JLabel( "~~~ Content Layer ~~~" );
+		 * filterLabel.setBounds( 8, 8, 164, 24 ); parentBox.add( filterLabel );
+		 * 
+		 * // JCheckBox final JCheckBox isActiveBox = new JCheckBox( "Activate"
+		 * ); isActiveBox.setBounds( 8, 40, 120, 24 ); isActiveBox.setSelected(
+		 * true ); isActiveBox.addActionListener( new ActionListener() { public
+		 * void actionPerformed( ActionEvent arg0 ) {
+		 * ContentLayer.this.setActive( isActiveBox.isSelected() ); } } );
+		 * parentBox.add( isActiveBox );
+		 */
+	}
 
-		// JCheckBox
-		final JCheckBox isActiveBox = new JCheckBox( "Activate" );
-		isActiveBox.setBounds( 8, 40, 120, 24 );
-		isActiveBox.setSelected( true );
-		isActiveBox.addActionListener( new ActionListener() {
-			public void actionPerformed( ActionEvent arg0 ) {
-				ContentLayer.this.setActive( isActiveBox.isSelected() );
-			}
-		} );
-		parentBox.add( isActiveBox );
+	@Override
+	public int getGUIHeigth() {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 
 	// giveContent() - gives the filter an InformationContent object to call for
 	// drawing
 	public synchronized int giveContent( Filter f, InformationContent c ) {
+
 		Map<Integer, InformationContent> map = getOrCreateFilterEntry( f );
+
 		int id = ids++;
 		map.put( id, c );
 		c.setId( id );
@@ -92,12 +112,14 @@ public class ContentLayer extends AbstractFilter {
 
 	// getOrCreateFilterEntry() - gives back an map object for the content of f
 	private Map<Integer, InformationContent> getOrCreateFilterEntry( Filter f ) {
+
 		Map<Integer, InformationContent> map;
 		map = contentByFilter.get( f );
 		if ( map == null ) {
 			contentByFilter.put( f, new HashMap<Integer, InformationContent>() );
 			map = contentByFilter.get( f );
 		}
+
 		return map;
 	}
 

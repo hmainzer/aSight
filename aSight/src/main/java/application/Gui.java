@@ -111,8 +111,8 @@ public class Gui {
 		changeInput.addActionListener( new ActionListener() {
 			public void actionPerformed( ActionEvent arg0 ) {
 				i.end();
-				//i = new InputStreamCamera( in, application, outUsed );
-				i = new InputStream( in, application, outUsed );
+				i = new InputStreamCamera( in, application, outUsed );
+				//i = new InputStream( in, application, outUsed );
 				i.start();
 			}
 		} );
