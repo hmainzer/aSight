@@ -10,8 +10,9 @@ import java.io.Reader;
 import java.net.URL;
 import java.util.ArrayList;
 
-import tests.FtpUploader;
 import javax.imageio.ImageIO;
+
+import application.FtpManager;
 
 public class PictureSearchThread extends Thread {
 
@@ -30,16 +31,15 @@ public class PictureSearchThread extends Thread {
 
 	public void run() {
 
-		LoadingBarContent load = new LoadingBarContent( -5, f, 100, 100, "saving", Color.green,
+		LoadingBarContent load = new LoadingBarContent( -5, f, 100, 400, "saving", Color.green,
 				application.Main.getFont() );
 		cl.giveContent( f, load );
 		File outputfile = new File( "ImageSearch/Image_" + System.currentTimeMillis() + ".jpg" );
 		try {
 			ImageIO.write( img, "jpg", outputfile );
 			load.setString( "uploading" );
-			String image_url = "http://www.ibiblio.org/wm/paint/auth/gogh/gogh.chambre-arles.jpg";
-			// FtpUploader.uploadFileToFtp( host, user, pwd, localFileName,
-			// fileName, hostDir );
+			String image_url = FtpManager.uploadFileToFtp( "ftp.asight.bplaced.net", "asight", "DummyPW123",
+					outputfile.getCanonicalPath(), outputfile.getName(), "" );
 			load.setString( "searching" );
 			String charset = "UTF-8";
 			String category = Integer.toString( this.category );
@@ -47,14 +47,14 @@ public class PictureSearchThread extends Thread {
 
 			URL url = new URL( "http://www.revimg.net/jsapi/index_api.php?category=" + category + "&image_url="
 					+ application.Utility.encodeURIComponent( image_url ) + "&precision=" + precision + "&callback=?" );
-
 			ArrayList<String> rslt = generateResults( new InputStreamReader( url.openStream(), charset ) );
 			cl.setTimeoutForFilter( f, 1 );
-			load.setInactiveAndKill();		
-			for ( int i = 0; i < 3 && i < rslt.size(); i++ ) {				
-				cl.giveContent( f,
-						new StringContent( 60, f, rslt.get( i ), 0, i * 30, Color.GREEN, application.Main.getFont() ) );
+			load.setInactiveAndKill();
+			for ( int i = 0; i < 3 && i < rslt.size(); i++ ) {
+				cl.giveContent( f, new StringContent( 60, f, rslt.get( i ), 100, 400 + i * 24, Color.GREEN,
+						application.Main.getFont() ) );
 			}
+			FtpManager.deleteFileFromFtp( "ftp.asight.bplaced.net", "asight", "DummyPW123", outputfile.getName(), "" );
 
 		} catch ( IOException e ) {
 			e.printStackTrace();

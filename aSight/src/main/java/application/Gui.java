@@ -173,13 +173,7 @@ public class Gui {
 					filterPanel.add( container );
 				}
 			}
-
 		}
-
-		JPanel outPanel = new JPanel();
-		outPanel.setBounds( 490, 0, 310, 552 );
-		frame.getContentPane().add( outPanel );
-		outPanel.setLayout( null );
 
 		i.start();
 

@@ -3,7 +3,7 @@ package application;
 import java.awt.AWTException;
 import java.awt.Rectangle;
 import java.awt.Robot;
-import java.awt.Toolkit;
+//import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
 
 public class InputStream extends Thread {
@@ -39,8 +39,8 @@ public class InputStream extends Thread {
 		try {
 			robot = new Robot();
 
-			final Toolkit toolkit = Toolkit.getDefaultToolkit();
-			final Rectangle screenBounds = new Rectangle( toolkit.getScreenSize() );
+			//final Toolkit toolkit = Toolkit.getDefaultToolkit();
+			final Rectangle screenBounds = new Rectangle(800,600);//new Rectangle( toolkit.getScreenSize() );
 			while ( !end ) {
 				BufferedImage screen = robot.createScreenCapture( screenBounds );
 				target1.setImage( screen );

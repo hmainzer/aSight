@@ -22,7 +22,7 @@ public class Main {
 
 	public static void main( String[] args ) {
 		// font
-		font = new Font( "Arial", Font.PLAIN, 24 );
+		font = new Font( "Arial", Font.PLAIN, 16 );
 		filter.ContentLayer cl = new filter.ContentLayer();
 		ArrayList<filter.Filter> filterList = new ArrayList<filter.Filter>();
 		filterList.add( new AdjustmentFilter( 0, 0, 800, 600 ) );

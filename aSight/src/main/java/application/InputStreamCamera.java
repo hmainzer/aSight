@@ -1,9 +1,6 @@
 package application;
 
-import java.awt.color.ColorSpace;
 import java.awt.image.BufferedImage;
-import java.awt.image.ColorConvertOp;
-
 import com.xuggle.xuggler.ICodec;
 import com.xuggle.xuggler.IContainer;
 import com.xuggle.xuggler.IContainerFormat;
@@ -22,9 +19,9 @@ public class InputStreamCamera extends InputStream {
 
 	public InputStreamCamera( VideoField target1, Main application, VideoField target2 ) {
 		super( target1, application, target2 );
-		// TODO Auto-generated constructor stub
 	}
 
+	@SuppressWarnings( "deprecation" )
 	public void run() {
 		String driverName = "vfwcap";
 		String deviceName = "0";
@@ -49,7 +46,7 @@ public class InputStreamCamera extends InputStream {
 		IMetaData params = IMetaData.make();
 
 		params.setValue( "framerate", "30/1" );
-		params.setValue( "video_size", "640x480" );
+		params.setValue( "video_size", "800x600" );
 
 		// Open up the container
 		int retval = container.open( deviceName, IContainer.Type.READ, format, false, true, params, null );
@@ -158,8 +155,9 @@ public class InputStreamCamera extends InputStream {
 						BufferedImage javaImage = c.toImage( newPic );
 
 						// Utils.videoPictureToImage(newPic);
-						//ColorConvertOp op = new ColorConvertOp( ColorSpace.getInstance( ColorSpace.CS_GRAY ), null );
-						//op.filter( javaImage, javaImage );
+						// ColorConvertOp op = new ColorConvertOp(
+						// ColorSpace.getInstance( ColorSpace.CS_GRAY ), null );
+						// op.filter( javaImage, javaImage );
 
 						// modify
 						// Graphics2D graph = javaImage.createGraphics();

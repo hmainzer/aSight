@@ -1,4 +1,4 @@
-package tests;
+package application;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -11,12 +11,13 @@ import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPReply;
 
-public class FtpUploader {
+public class FtpManager {
 
 	FTPClient ftp = null;
 
-	public FtpUploader( String host, String user, String pwd ) throws Exception {
+	public FtpManager( String host, String user, String pwd ) throws Exception {
 		ftp = new FTPClient();
+
 		ftp.addProtocolCommandListener( new PrintCommandListener( new PrintWriter( System.out ) ) );
 		int reply;
 		ftp.connect( host );
@@ -36,6 +37,11 @@ public class FtpUploader {
 		}
 	}
 
+	public void deleteFile( String fileName, String hostDir ) throws Exception {
+		this.ftp.deleteFile( hostDir + fileName );
+
+	}
+
 	public void disconnect() {
 		if ( this.ftp.isConnected() ) {
 			try {
@@ -50,27 +56,26 @@ public class FtpUploader {
 	public static String uploadFileToFtp( String host, String user, String pwd, String localFileName, String fileName,
 			String hostDir ) {
 		try {
-			FtpUploader ftpUploader = new FtpUploader( host, user, pwd );
+			FtpManager ftpUploader = new FtpManager( host, user, pwd );
 			ftpUploader.uploadFile( localFileName, fileName, hostDir );
+			ftpUploader.disconnect();
+		} catch ( Exception e ) {
+			e.printStackTrace();
+		}
+		// http://www.asight.bplaced.net/searchImage/Image1380135838979.jpg
+		// return "ftp://" + user + ":" + pwd + "@" + host + hostDir + "/" + fileName;
+		return "http://www.asight.bplaced.net/" + fileName; 
+	}
+
+	public static void deleteFileFromFtp( String host, String user, String pwd, String fileName, String hostDir ) {
+		try {
+			FtpManager ftpUploader = new FtpManager( host, user, pwd );
+			ftpUploader.deleteFile( fileName, hostDir );
 			ftpUploader.disconnect();
 		} catch ( Exception e ) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
-		return host + hostDir + "/" + fileName;
-	}
-
-	public static void main( String[] args ) throws Exception {
-		System.out.println( "Start" );
-		FtpUploader ftpUploader = new FtpUploader( "ftp.journaldev.com", "ftpUser", "ftpPassword" );
-		// FTP server path is relative. So if FTP account HOME directory is
-		// "/home/pankaj/public_html/" and you need to upload
-		// files to "/home/pankaj/public_html/wp-content/uploads/image2/", you
-		// should pass directory parameter as "/wp-content/uploads/image2/"
-		ftpUploader.uploadFile( "D:\\Pankaj\\images\\MyImage.png", "image.png", "/wp-content/uploads/image2/" );
-		ftpUploader.disconnect();
-		System.out.println( "Done" );
 	}
 
 }
