@@ -13,8 +13,6 @@ import java.util.ArrayList;
 import tests.FtpUploader;
 import javax.imageio.ImageIO;
 
-import com.google.zxing.common.StringUtils;
-
 public class PictureSearchThread extends Thread {
 
 	private ContentLayer cl;
@@ -32,15 +30,17 @@ public class PictureSearchThread extends Thread {
 
 	public void run() {
 
-		LoadingBarContent load = new LoadingBarContent( -5, f,  100, 100, Color.green, application.Main.getFont() );
+		LoadingBarContent load = new LoadingBarContent( -5, f, 100, 100, "saving", Color.green,
+				application.Main.getFont() );
 		cl.giveContent( f, load );
-		File outputfile = new File( "Image_" + System.currentTimeMillis() + ".jpg" );
+		File outputfile = new File( "ImageSearch/Image_" + System.currentTimeMillis() + ".jpg" );
 		try {
 			ImageIO.write( img, "jpg", outputfile );
-			String image_url = "http://www.ibiblio.org/wm/paint/auth/gogh/gogh.chambre-arles.jpg"; // FtpUploader.uploadFileToFtp(
-																									// host,
-																									// user,
-			// pwd, localFileName, fileName, hostDir );
+			load.setString( "uploading" );
+			String image_url = "http://www.ibiblio.org/wm/paint/auth/gogh/gogh.chambre-arles.jpg";
+			// FtpUploader.uploadFileToFtp( host, user, pwd, localFileName,
+			// fileName, hostDir );
+			load.setString( "searching" );
 			String charset = "UTF-8";
 			String category = Integer.toString( this.category );
 			String precision = Integer.toString( this.precision );
@@ -49,16 +49,9 @@ public class PictureSearchThread extends Thread {
 					+ application.Utility.encodeURIComponent( image_url ) + "&precision=" + precision + "&callback=?" );
 
 			ArrayList<String> rslt = generateResults( new InputStreamReader( url.openStream(), charset ) );
-			String result = "";
 			cl.setTimeoutForFilter( f, 1 );
-			load.setTimeout( 3 );
-			try {
-				Thread.sleep( 100 );
-			} catch ( InterruptedException e ) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			for ( int i = 0; i < 3 && i < rslt.size(); i++ ) {
+			load.setInactiveAndKill();		
+			for ( int i = 0; i < 3 && i < rslt.size(); i++ ) {				
 				cl.giveContent( f,
 						new StringContent( 60, f, rslt.get( i ), 0, i * 30, Color.GREEN, application.Main.getFont() ) );
 			}
@@ -78,7 +71,6 @@ public class PictureSearchThread extends Thread {
 			try {
 				line = bRslt.readLine();
 			} catch ( IOException e ) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			if ( line != null ) {

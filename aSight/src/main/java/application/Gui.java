@@ -70,104 +70,57 @@ public class Gui {
 		frame = new JFrame();
 		frame.setTitle( "aSight" );
 		frame.setResizable( false );
-		frame.setBounds(0, 0, 800, 580);
+		frame.setBounds( 0, 0, 800, 580 );
 		frame.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
-		frame.getContentPane().setLayout(null);
+		frame.getContentPane().setLayout( null );
 
-		final GraphicsDevice[] monitorArray = GraphicsEnvironment
-				.getLocalGraphicsEnvironment().getScreenDevices();
-		videoFrame = new JFrame("Fullscreen Display");
-		videoFrame.setLocation(monitorArray[0].getDefaultConfiguration()
-				.getBounds().getLocation());
-		videoFrame.setUndecorated(true);
-		videoFrame.setExtendedState(Frame.MAXIMIZED_BOTH);
-		outFull = new VideoField(monitorArray[0].getDefaultConfiguration()
-				.getBounds().getSize());
-		videoFrame.getContentPane().add(outFull);
-		videoFrame.setVisible(false);
+		final GraphicsDevice[] monitorArray = GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices();
+		videoFrame = new JFrame( "Fullscreen Display" );
+		videoFrame.setLocation( monitorArray[0].getDefaultConfiguration().getBounds().getLocation() );
+		videoFrame.setUndecorated( true );
+		videoFrame.setExtendedState( Frame.MAXIMIZED_BOTH );
+		outFull = new VideoField( monitorArray[0].getDefaultConfiguration().getBounds().getSize() );
+		videoFrame.getContentPane().add( outFull );
+		videoFrame.setVisible( false );
 
 		// absolute positioning: all x, y, w and h are multiples of 8!
 		// default line height: 24
 
-		JPanel inPanel = new JPanel();
-		inPanel.setBounds( 0, 0, 310, 552 );
-		frame.getContentPane().add( inPanel );
-		inPanel.setLayout( null );
+		JPanel videoPanel = new JPanel();
+		videoPanel.setBounds( 0, 0, 310, 552 );
+		frame.getContentPane().add( videoPanel );
+		videoPanel.setLayout( null );
 
 		final VideoField in = new VideoField( new Dimension( 310, 240 ) );
 		in.setBounds( 0, 0, 310, 240 );
-		inPanel.add( in );
+		videoPanel.add( in );
 
-		JLabel inLabel = new JLabel( "In Channel: " );
-		inLabel.setBounds( 8, 248, 80, 24 );
-		inPanel.add( inLabel );
-		/*
-		 * JComboBox<Integer> inComboBox = new JComboBox<Integer>(
-		 * application.getCountInputDevices() ); inComboBox.setBounds( 88, 248,
-		 * 120, 24 ); inPanel.add( inComboBox );
-		 */
 		JButton changeInput = new JButton( "Change Input" );
-		changeInput.setBounds( 88, 248, 120, 24 );
+		changeInput.setBounds( 8, 248, 120, 24 );
 		changeInput.addActionListener( new ActionListener() {
 			public void actionPerformed( ActionEvent arg0 ) {
 				i.end();
 				i = new InputStreamCamera( in, application, outUsed );
-				//i = new InputStream( in, application, outUsed );
+				// i = new InputStream( in, application, outUsed );
 				i.start();
 			}
 		} );
-		inPanel.add( changeInput );
-
-		JPanel filterPanel = new JPanel();
-		filterPanel.setBounds( 310, 0, 180, 552 );
-		frame.getContentPane().add( filterPanel );
-		filterPanel.setLayout( null );
-
-		{// filterPanel
-			ArrayList<Filter> filter = application.getFilter();
-			int sumHeightPx = 0;
-			int height = 0;
-			int y = 0;
-			// max height = 672
-			for ( Filter f : filter ) {
-				if ( ( height = f.getGUIHeigth() ) > 0 ) {
-					if ( ( sumHeightPx + height * 24 + ( height + 1 ) * 8 ) > 672 ) {
-						if ( y == 180 ) {
-							System.err.println( "to many filters!!!!" );
-						} /*
-						 * else { y = 180; sumHeightPx = 0; }
-						 */
-					}
-					JPanel container = new JPanel();
-					container.setBounds( y, sumHeightPx, 180, height * 24 + ( height + 1 ) * 8 );
-					container.setLayout( null );
-					sumHeightPx = sumHeightPx + height * 24 + ( height + 1 ) * 8;
-					f.createGUI( container );
-					filterPanel.add( container );
-				}
-			}
-
-		}
-
-		JPanel outPanel = new JPanel();
-		outPanel.setBounds( 490, 0, 310, 552 );
-		frame.getContentPane().add( outPanel );
-		outPanel.setLayout( null );
+		videoPanel.add( changeInput );
 
 		final VideoField out = new VideoField( new Dimension( 310, 240 ) );
-		out.setBounds( 0, 0, 310, 240 );
-		outPanel.add( out );
+		out.setBounds( 0, 280, 310, 240 );
+		videoPanel.add( out );
 
 		JLabel outLabel = new JLabel( "Out Channel: " );
-		outLabel.setBounds( 8, 248, 80, 24 );
-		outPanel.add( outLabel );
+		outLabel.setBounds( 168, 248, 80, 24 );
+		videoPanel.add( outLabel );
 
 		outUsed = out;
-		//i = new InputStreamCamera(in, application, outUsed);
+		// i = new InputStreamCamera(in, application, outUsed);
 		i = new InputStream( in, application, outUsed );
 
 		final JComboBox<Integer> outComboBox = new JComboBox<Integer>( application.getCountOutputDevices() );
-		outComboBox.setBounds( 88, 248, 120, 24 );
+		outComboBox.setBounds( 256, 248, 40, 24 );
 		outComboBox.addItemListener( new ItemListener() {
 
 			public void itemStateChanged( ItemEvent e ) {
@@ -188,8 +141,45 @@ public class Gui {
 				}
 			}
 		} );
+		videoPanel.add( outComboBox );
 
-		outPanel.add( outComboBox );
+		JPanel filterPanel = new JPanel();
+		filterPanel.setBounds( 310, 0, 490, 552 );
+		frame.getContentPane().add( filterPanel );
+		filterPanel.setLayout( null );
+
+		{// filterPanel
+			ArrayList<Filter> filter = application.getFilter();
+			int sumHeightPx = 0;
+			int height = 0;
+			int y = 0;
+			// max height = 672
+			for ( Filter f : filter ) {
+				if ( ( height = f.getGUIHeigth() ) > 0 ) {
+					if ( ( sumHeightPx + height * 24 + ( height + 1 ) * 8 ) > 552 ) {
+						if ( y == 180 ) {
+							System.err.println( "to many filters!!!!" );
+						} else {
+							y = 180;
+							sumHeightPx = 0;
+						}
+
+					}
+					JPanel container = new JPanel();
+					container.setBounds( y, sumHeightPx, 180, height * 24 + ( height + 1 ) * 8 );
+					container.setLayout( null );
+					sumHeightPx = sumHeightPx + height * 24 + ( height + 1 ) * 8;
+					f.createGUI( container );
+					filterPanel.add( container );
+				}
+			}
+
+		}
+
+		JPanel outPanel = new JPanel();
+		outPanel.setBounds( 490, 0, 310, 552 );
+		frame.getContentPane().add( outPanel );
+		outPanel.setLayout( null );
 
 		i.start();
 

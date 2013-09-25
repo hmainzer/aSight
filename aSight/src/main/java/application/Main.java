@@ -31,6 +31,7 @@ public class Main {
 		filterList.add( new CodeParaFilter( cl ) );
 
 		filterList.add( cl );
+		filterList.add( new CorrectionFilter() );
 		cl.setFilterList( filterList );
 		Gui.createGui( new Main( filterList, filterList.get( 0 ), cl ) );
 	}

@@ -7,7 +7,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.util.*;
-import java.util.concurrent.Semaphore;
 
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
@@ -55,14 +54,14 @@ public class ContentLayer extends AbstractFilter {
 				keys2 = map.keySet();
 				for ( Integer i : keys2 ) {
 					c = map.get( i );
-					img = c.paintContent( img );
 					c.setTimeout( c.getTimeout() - 1 );
 					if ( c.getTimeout() == 0 ) {
 						if ( toDelete == null ) {
 							toDelete = new ArrayList<Integer>();
 						}
 						toDelete.add( i );
-						// map.remove( i );
+					} else {
+						img = c.paintContent( img );
 					}
 				}
 				if ( toDelete != null ) {
@@ -79,23 +78,27 @@ public class ContentLayer extends AbstractFilter {
 	}
 
 	public void createGUI( Container parentBox ) {
-		/*
-		 * // JLabel JLabel filterLabel = new JLabel( "~~~ Content Layer ~~~" );
-		 * filterLabel.setBounds( 8, 8, 164, 24 ); parentBox.add( filterLabel );
-		 * 
-		 * // JCheckBox final JCheckBox isActiveBox = new JCheckBox( "Activate"
-		 * ); isActiveBox.setBounds( 8, 40, 120, 24 ); isActiveBox.setSelected(
-		 * true ); isActiveBox.addActionListener( new ActionListener() { public
-		 * void actionPerformed( ActionEvent arg0 ) {
-		 * ContentLayer.this.setActive( isActiveBox.isSelected() ); } } );
-		 * parentBox.add( isActiveBox );
-		 */
+
+		JLabel filterLabel = new JLabel( "~~~ Content Layer ~~~" );
+		filterLabel.setBounds( 8, 8, 164, 24 );
+		parentBox.add( filterLabel );
+
+		final JCheckBox isActiveBox = new JCheckBox( "Activate" );
+		isActiveBox.setBounds( 8, 40, 120, 24 );
+		isActiveBox.setSelected( true );
+		isActiveBox.addActionListener( new ActionListener() {
+			public void actionPerformed( ActionEvent arg0 ) {
+				ContentLayer.this.setActive( isActiveBox.isSelected() );
+			}
+		} );
+		parentBox.add( isActiveBox );
+
 	}
 
 	@Override
 	public int getGUIHeigth() {
 		// TODO Auto-generated method stub
-		return 0;
+		return 2;
 	}
 
 	// giveContent() - gives the filter an InformationContent object to call for
