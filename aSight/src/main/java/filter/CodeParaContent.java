@@ -6,7 +6,7 @@ import java.util.ArrayList;
 
 
 public class CodeParaContent extends InformationContent{
-	public CodeParaContent(int timeout, Filter parent) {
+	public CodeParaContent(int timeout, ContentLayerCompatible parent) {
 		super(timeout, parent);
 	}
 
@@ -20,6 +20,7 @@ public class CodeParaContent extends InformationContent{
 	public BufferedImage paintContent(BufferedImage img) {
 		if (codes!= null){
 			Graphics g = img.getGraphics();
+			g.setFont(application.Main.getFont());
 			try {
 				ArrayList<CodeParaContainer> arr = codes.read();
 				for (CodeParaContainer c: arr)

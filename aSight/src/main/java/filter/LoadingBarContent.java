@@ -15,7 +15,7 @@ public class LoadingBarContent extends InformationContent {
 	private String s;
 	private boolean inactive = false;
 
-	public LoadingBarContent( int timeout, Filter parent, int x, int y, String s, Color c, Font f ) {
+	public LoadingBarContent( int timeout, ContentLayerCompatible parent, int x, int y, String s, Color c, Font f ) {
 		super( timeout, parent );
 		this.x = x;
 		this.y = y;

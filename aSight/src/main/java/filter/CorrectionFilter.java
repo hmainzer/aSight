@@ -12,9 +12,12 @@ import com.jhlabs.image.PerspectiveFilter;
 
 public class CorrectionFilter extends AbstractFilter {
 
+	private JCheckBox isActiveBox;
+	protected int defaultKey = 0;
+	
 	public CorrectionFilter() {
 		super();
-		super.setActive( true );
+		super.setActive( false );
 	}
 
 	protected BufferedImage action( BufferedImage img ) {
@@ -35,9 +38,9 @@ public class CorrectionFilter extends AbstractFilter {
 		filterLabel.setBounds( 8, 8, 164, 24 );
 		parentBox.add( filterLabel );
 
-		final JCheckBox isActiveBox = new JCheckBox( "Activate" );
+		isActiveBox = new JCheckBox( "Activate" );
 		isActiveBox.setBounds( 8, 40, 120, 24 );
-		isActiveBox.setSelected( true );
+		isActiveBox.setSelected( this.isActive() );
 		isActiveBox.addActionListener( new ActionListener() {
 			public void actionPerformed( ActionEvent arg0 ) {
 				CorrectionFilter.this.setActive( isActiveBox.isSelected() );
@@ -48,5 +51,16 @@ public class CorrectionFilter extends AbstractFilter {
 
 	public int getGUIHeigth() {
 		return 2;
+	}
+
+	@Override
+	public boolean keyEvent( int key, int event, HotkeyMessage msg ) {
+		if ( key == defaultKey ) {
+			this.setActive( !this.isActive() );
+			isActiveBox.setSelected( this.isActive() );
+			msg.addEvent( "Correction Filter: " + ( this.isActive() ? "on" : "off" ) );
+			return true;
+		}
+		return false;
 	}
 }

@@ -19,6 +19,11 @@ public class PictureSearchFilter extends AbstractFilter {
 	private ContentLayer cl;
 	private boolean takeNextPicture = false;
 	private int category = 0, precision = 1;
+	private final int keyPrec = 34, keyStart = 127, keyCatP = 12, keyCatM = 38;
+	protected int defaultKey = 40;
+	private JCheckBox isActiveBox;
+	private JComboBox<String> categoryComboBox;
+	private JSpinner precisionSpinner;
 
 	public PictureSearchFilter( ContentLayer cl ) {
 		this.cl = cl;
@@ -46,7 +51,7 @@ public class PictureSearchFilter extends AbstractFilter {
 		parentBox.add( filterLabel );
 
 		// JCheckBox
-		final JCheckBox isActiveBox = new JCheckBox( "Activate" );
+		isActiveBox = new JCheckBox( "Activate" );
 		isActiveBox.setBounds( 8, 40, 120, 24 );
 		isActiveBox.addActionListener( new ActionListener() {
 			public void actionPerformed( ActionEvent arg0 ) {
@@ -72,7 +77,7 @@ public class PictureSearchFilter extends AbstractFilter {
 		parentBox.add( categoryLabel );
 
 		// Category
-		final JComboBox<String> categoryComboBox = new JComboBox<String>( getCategories() );
+		categoryComboBox = new JComboBox<String>( getCategories() );
 		categoryComboBox.setBounds( 64, 104, 104, 24 );
 		categoryComboBox.setSelectedIndex( category );
 		categoryComboBox.addActionListener( new ActionListener() {
@@ -90,7 +95,7 @@ public class PictureSearchFilter extends AbstractFilter {
 		parentBox.add( precisionLabel );
 
 		// Precision
-		final JSpinner precisionSpinner = new JSpinner();
+		precisionSpinner = new JSpinner();
 		precisionSpinner.setValue( precision );
 		precisionSpinner.setBounds( 64, 136, 104, 24 );
 		precisionSpinner.addChangeListener( new ChangeListener() {
@@ -150,6 +155,54 @@ public class PictureSearchFilter extends AbstractFilter {
 		v.add( "31 > Barcelona monuments (based on google search) " );
 		v.add( "32 > Rome monuments (based on google search)      " );
 		return v;
+	}
+
+	@Override
+	public boolean keyEvent( int key, int event, HotkeyMessage msg ) {
+		if ( key == defaultKey ) {
+			this.setActive( !this.isActive() );
+			isActiveBox.setSelected( this.isActive() );
+			msg.addEvent( "Picture Search Filter: " + ( this.isActive() ? "on" : "off" ) );
+			return true;
+		}
+		if ( !this.isActive() ) {
+			return false;
+		}
+		switch ( key ) {
+			case keyPrec: {
+				if ( (int) precisionSpinner.getValue() == 10 ) {
+					precisionSpinner.setValue( 1 );
+				} else {
+					precisionSpinner.setValue( (int) precisionSpinner.getValue() + 1 );
+				}
+				msg.addEvent( "Picture Search Filter: Precision: " + precisionSpinner.getValue() );
+				return true;
+			}
+			case keyStart: {
+				takeNextPicture = true;
+				msg.addEvent( "Picture Search FilteR: Search Picture" );
+				return true;
+			}
+			case keyCatP: {
+				if ( categoryComboBox.getSelectedIndex() == categoryComboBox.getItemCount() - 1 ) {
+					categoryComboBox.setSelectedIndex( 0 );
+				} else {
+					categoryComboBox.setSelectedIndex( categoryComboBox.getSelectedIndex() + 1 );
+				}
+				msg.addEvent( "Picture Search FilteR: Category: " + categoryComboBox.getSelectedItem() );
+				return true;
+			}
+			case keyCatM: {
+				if ( categoryComboBox.getSelectedIndex() == 0 ) {
+					categoryComboBox.setSelectedIndex( categoryComboBox.getItemCount() - 1 );
+				} else {
+					categoryComboBox.setSelectedIndex( categoryComboBox.getSelectedIndex() - 1 );
+				}
+				msg.addEvent( "Picture Search FilteR: Category: " + categoryComboBox.getSelectedItem() );
+				return true;
+			}
+		}
+		return false;
 	}
 
 }

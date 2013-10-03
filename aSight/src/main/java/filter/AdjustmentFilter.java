@@ -15,6 +15,14 @@ public class AdjustmentFilter extends AbstractFilter {
 
 	private int x, y, width, height;
 	private JSpinner xSpinner, ySpinner, wSpinner, hSpinner;
+	private JCheckBox isActiveBox;
+	private final int keyYp = 104, keyYm = 98, keyXp = 102, keyXm = 100; // Keypad
+																						// 0
+																						// +
+																						// Arrows
+																						// (numlock
+																						// active)
+	protected int defaultKey = 155;
 
 	public AdjustmentFilter( int x, int y, int width, int height ) {
 		this.x = x;
@@ -50,7 +58,7 @@ public class AdjustmentFilter extends AbstractFilter {
 		parentBox.add( filterLabel );
 
 		// JCheckBox
-		final JCheckBox isActiveBox = new JCheckBox( "Activate" );
+		isActiveBox = new JCheckBox( "Activate" );
 		isActiveBox.setBounds( 8, 40, 120, 24 );
 		isActiveBox.addActionListener( new ActionListener() {
 			public void actionPerformed( ActionEvent arg0 ) {
@@ -156,4 +164,38 @@ public class AdjustmentFilter extends AbstractFilter {
 		return 4;
 	}
 
+	public boolean keyEvent( int key, int event, HotkeyMessage msg ) {
+		if ( key == defaultKey ) {
+			this.setActive( !this.isActive() );
+			isActiveBox.setSelected( this.isActive() );
+			msg.addEvent( "Adjustment Filter: " + ( this.isActive() ? "on" : "off" ) );
+			return true;
+		}
+		if ( !this.isActive() ) {
+			return false;
+		}
+		switch ( key ) {
+			case keyXp: {
+				xSpinner.setValue( (int) xSpinner.getValue() + 1 );
+				msg.addEvent( "Adjustment Filter: X+" );
+				return true;
+			}
+			case keyXm: {
+				xSpinner.setValue( (int) xSpinner.getValue() - 1 );
+				msg.addEvent( "Adjustment Filter: X-" );
+				return true;
+			}
+			case keyYp: {
+				ySpinner.setValue( (int) ySpinner.getValue() + 1 );
+				msg.addEvent( "Adjustment Filter: Y+" );
+				return true;
+			}
+			case keyYm: {
+				ySpinner.setValue( (int) ySpinner.getValue() - 1 );
+				msg.addEvent( "Adjustment Filter: Y-" );
+				return true;
+			}
+		}
+		return false;
+	}
 }

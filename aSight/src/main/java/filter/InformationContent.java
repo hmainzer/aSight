@@ -6,10 +6,10 @@ public abstract class InformationContent {
 
 	
 	private int timeout;	
-	private final Filter parent;
+	private final ContentLayerCompatible parent;
 	private int id;
 
-	public InformationContent( int timeout, Filter parent ) {				
+	public InformationContent( int timeout, ContentLayerCompatible parent ) {				
 		this.timeout = timeout;
 		this.parent = parent;
 	}
@@ -22,7 +22,7 @@ public abstract class InformationContent {
 		return timeout;
 	}
 
-	public Filter getParent() {
+	public ContentLayerCompatible getParent() {
 		return parent;
 	}
 

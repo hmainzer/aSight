@@ -6,6 +6,11 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
 public class Utility {
+	public static int pressed = 1;
+	public static int released = 0;
+	public static int typed = 2;
+	
+	
 	public static BufferedImage resize( BufferedImage img, int w, int h ) {
 		BufferedImage resizedImage = new BufferedImage( w, h, img.getType() );
 		Graphics2D g = resizedImage.createGraphics();

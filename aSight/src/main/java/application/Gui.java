@@ -13,18 +13,26 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import filter.*;
 import java.util.ArrayList;
 
-public class Gui {
+public class Gui implements KeyListener, ContentLayerCompatible {
 
 	private JFrame frame, videoFrame;
 	private VideoField in, out, outFull, outUsed;
 	private Main application;
 	private InputStream i;
+
+	private int mainKey = 65;
+	private boolean keyPushed = false;
+	private HotkeyMessage msg;
+
+	private ArrayList<Filter> filter;
 
 	/**
 	 * Launch the application.
@@ -36,6 +44,7 @@ public class Gui {
 				try {
 					Gui window = new Gui( application );
 					window.frame.setVisible( true );
+					window.videoFrame.addKeyListener( window );
 				} catch ( Exception e ) {
 					e.printStackTrace();
 				}
@@ -63,6 +72,42 @@ public class Gui {
 		return application;
 	}
 
+	@Override
+	public void keyPressed( KeyEvent e ) {
+		System.out.println( "pressed" + " " + e.getKeyCode() );
+		if ( keyPushed ) {
+			keyMsg( e.getKeyCode(), Utility.pressed );
+		} else {
+			if ( e.getKeyCode() == mainKey ) {
+				keyPushed = true;
+				System.out.println( "MAIN" );
+			}
+		}
+	}
+
+	@Override
+	public void keyReleased( KeyEvent e ) {
+		if ( e.getKeyCode() == mainKey ) {
+			keyPushed = false;
+		} else {
+			keyMsg( e.getKeyCode(), Utility.released );
+		}
+	}
+
+	@Override
+	public void keyTyped( KeyEvent e ) {
+	}
+
+	
+	
+	private void keyMsg( int value, int event ) {
+
+		boolean found = false;
+		for ( int i = 0; i < filter.size() && !found; i++ ) {
+			found = filter.get( i ).keyEvent( value, event, msg );
+		}
+	}
+
 	/**
 	 * Initialize the contents of the frame.
 	 */
@@ -83,6 +128,9 @@ public class Gui {
 		videoFrame.getContentPane().add( outFull );
 		videoFrame.setVisible( false );
 
+		msg = new HotkeyMessage(-1, this);
+		application.getContentLayer().giveContent( this,msg );
+		
 		// absolute positioning: all x, y, w and h are multiples of 8!
 		// default line height: 24
 
@@ -149,7 +197,7 @@ public class Gui {
 		filterPanel.setLayout( null );
 
 		{// filterPanel
-			ArrayList<Filter> filter = application.getFilter();
+			filter = application.getFilter();
 			int sumHeightPx = 0;
 			int height = 0;
 			int y = 0;

@@ -7,10 +7,12 @@ import java.awt.image.BufferedImage;
 
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
+import java.awt.event.KeyEvent;
 
-public abstract class AbstractFilter implements Filter {
+public abstract class AbstractFilter implements ContentLayerCompatible, Filter {
 
 	private boolean active = false;
+	protected int defaultKey = KeyEvent.VK_F12;
 
 	public BufferedImage useFilter( BufferedImage img ) {
 		if ( active ) {
@@ -54,5 +56,12 @@ public abstract class AbstractFilter implements Filter {
 	public boolean needsRealPicture(){
 		return false;
 	}
-
+	
+	public boolean keyEvent(int key, int event, HotkeyMessage msg){
+		if (key == defaultKey){
+			return true;
+		}
+		return false;
+	}
+	
 }

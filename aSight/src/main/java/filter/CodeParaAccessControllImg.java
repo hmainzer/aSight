@@ -5,53 +5,26 @@ import java.awt.image.BufferedImage;
 public class CodeParaAccessControllImg {
 	BufferedImage img = null;
 
-	private boolean readerActive;
-	private boolean writerActive;
-	private boolean writerWaiting;
+	private boolean readerWaiting;
 	
-	public BufferedImage read() throws CodeParaNoObjectYetException{
-		beforeRead();
-		BufferedImage returnImg = img;
-		afterRead();
-		return returnImg;
-	}
-
-	public void write(BufferedImage img){
-		beforeWrite();
-		this.img = application.Utility.copy(img);
-		afterWrite();
-	}
-	
-	private synchronized void beforeRead() throws CodeParaNoObjectYetException{
-		while(writerWaiting || writerActive){
+	public synchronized BufferedImage read() throws CodeParaNoObjectYetException{
+		readerWaiting=true;
+		while (readerWaiting){
 			try {
 				wait();
 			} catch (InterruptedException e) {
-				}
-		}
-		if (img==null)
-			throw new CodeParaNoObjectYetException();
-		readerActive=true;
-	}
-	
-	private synchronized void afterRead(){
-		readerActive=false;
-		notifyAll();
-	}
-	
-	private synchronized void beforeWrite(){
-		writerWaiting=true;
-		while (readerActive || writerActive){
-			try {
-				wait();
-			} catch (InterruptedException e) {
+				e.printStackTrace();
 			}
 		}
-		writerWaiting=false;
-		writerActive=true;
+		return img;
 	}
-	private synchronized void afterWrite(){
-		writerActive=false;
-		notifyAll();
+	
+	public synchronized BufferedImage write(BufferedImage img){
+		if (readerWaiting){
+			this.img = application.Utility.copy(img);
+			readerWaiting = false;	
+			notifyAll();
+		}
+		return img;
 	}
 }

@@ -12,10 +12,14 @@ import javax.swing.event.ChangeListener;
 public class ZoomFilter extends AbstractFilter {
 
 	private int faktor = 100;
+	private JSpinner faktorSpinner;
+	private JCheckBox isActiveBox;
+	private final int keyP = 107, keyM = 109;
+	protected int defaultKey = 35;
 
-	protected BufferedImage action( BufferedImage img ) {		
+	protected BufferedImage action( BufferedImage img ) {
 		float f = faktor / 100f;
-		int oldW = img.getWidth();		
+		int oldW = img.getWidth();
 		int oldH = img.getHeight();
 		int w = (int) ( oldW / f );
 		int h = (int) ( oldH / f );
@@ -32,7 +36,7 @@ public class ZoomFilter extends AbstractFilter {
 		parentBox.add( filterLabel );
 
 		// JCheckBox
-		final JCheckBox isActiveBox = new JCheckBox( "Activate" );
+		isActiveBox = new JCheckBox( "Activate" );
 		isActiveBox.setBounds( 8, 40, 120, 24 );
 		isActiveBox.addActionListener( new ActionListener() {
 			public void actionPerformed( ActionEvent arg0 ) {
@@ -47,7 +51,7 @@ public class ZoomFilter extends AbstractFilter {
 		parentBox.add( faktorLabel );
 
 		// JSpinner
-		final JSpinner faktorSpinner = new JSpinner();
+		faktorSpinner = new JSpinner();
 		faktorSpinner.setValue( faktor );
 		faktorSpinner.setBounds( 72, 72, 60, 24 );
 		faktorSpinner.addChangeListener( new ChangeListener() {
@@ -73,5 +77,39 @@ public class ZoomFilter extends AbstractFilter {
 
 	public boolean needsRealPicture() {
 		return true;
+	}
+
+	@Override
+	public boolean keyEvent( int key, int event, HotkeyMessage msg ) {
+		if ( key == defaultKey ) {
+			this.setActive( !this.isActive() );
+			isActiveBox.setSelected( this.isActive() );
+			msg.addEvent( "Zoom Filter: " + ( this.isActive() ? "on" : "off" ) );
+			return true;
+		}
+		if ( !this.isActive() ) {
+			return false;
+		}
+		switch ( key ) {
+			case keyP: {
+				faktor++;
+				if ( faktor > 1000 ){
+					faktor = 1000;
+				}
+				faktorSpinner.setValue( faktor );
+				msg.addEvent( "Zoom Filter: Faktor " + faktor + "%" );
+				return true;
+			}
+			case keyM: {
+				faktor--;
+				if ( faktor < 100 ){
+					faktor = 100;
+				}
+				faktorSpinner.setValue( faktor );
+				msg.addEvent( "Zoom Filter: Faktor " + faktor + "%" );
+				return true;
+			}
+		}
+		return false;
 	}
 }

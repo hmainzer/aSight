@@ -13,13 +13,13 @@ import javax.swing.JLabel;
 
 public class ContentLayer extends AbstractFilter {
 
-	private Map<Filter, Map<Integer, InformationContent>> contentByFilter;
+	private Map<ContentLayerCompatible, Map<Integer, InformationContent>> contentByFilter;
 	private Integer ids;
 	private ArrayList<Filter> filter = null;
 
 	public ContentLayer() {
 		super();
-		contentByFilter = new HashMap<Filter, Map<Integer, InformationContent>>();
+		contentByFilter = new HashMap<ContentLayerCompatible, Map<Integer, InformationContent>>();
 		ids = 0;
 		super.setActive( true );
 	}
@@ -43,13 +43,13 @@ public class ContentLayer extends AbstractFilter {
 			g.dispose();
 		}
 
-		Set<Filter> keys = contentByFilter.keySet();
+		Set<ContentLayerCompatible> keys = contentByFilter.keySet();
 		Set<Integer> keys2;
 		Map<Integer, InformationContent> map;
 		InformationContent c;
 		ArrayList<Integer> toDelete = null;
 		try {
-			for ( Filter f : keys ) {
+			for ( ContentLayerCompatible f : keys ) {
 				map = contentByFilter.get( f );
 				keys2 = map.keySet();
 				for ( Integer i : keys2 ) {
@@ -103,7 +103,7 @@ public class ContentLayer extends AbstractFilter {
 
 	// giveContent() - gives the filter an InformationContent object to call for
 	// drawing
-	public synchronized int giveContent( Filter f, InformationContent c ) {
+	public synchronized int giveContent( ContentLayerCompatible f, InformationContent c ) {
 
 		Map<Integer, InformationContent> map = getOrCreateFilterEntry( f );
 
@@ -114,7 +114,7 @@ public class ContentLayer extends AbstractFilter {
 	}
 
 	// getOrCreateFilterEntry() - gives back an map object for the content of f
-	private Map<Integer, InformationContent> getOrCreateFilterEntry( Filter f ) {
+	private Map<Integer, InformationContent> getOrCreateFilterEntry( ContentLayerCompatible f ) {
 
 		Map<Integer, InformationContent> map;
 		map = contentByFilter.get( f );
@@ -127,7 +127,7 @@ public class ContentLayer extends AbstractFilter {
 	}
 
 	// getIdActive() - returns if a id still exists within the contents of f
-	public boolean getIdActive( Filter f, int id ) {
+	public boolean getIdActive( ContentLayerCompatible f, int id ) {
 		Map<Integer, InformationContent> map = contentByFilter.get( f );
 		if ( map == null ) {
 			return false;
@@ -137,7 +137,7 @@ public class ContentLayer extends AbstractFilter {
 	}
 
 	// getInformationContent() - returns the Information content with id of f
-	public InformationContent getInformationContent( Filter f, int id ) {
+	public InformationContent getInformationContent( ContentLayerCompatible f, int id ) {
 		Map<Integer, InformationContent> map = contentByFilter.get( f );
 		if ( map == null ) {
 			return null;
@@ -148,7 +148,7 @@ public class ContentLayer extends AbstractFilter {
 
 	// getAnyActiveOfFilter() - returns true if the filter has any
 	// InformationContent Object
-	public boolean getAnyActiveOfFilter( Filter f ) {
+	public boolean getAnyActiveOfFilter( ContentLayerCompatible f ) {
 		Map<Integer, InformationContent> map = contentByFilter.get( f );
 		if ( map != null && map.size() > 0 ) {
 			return true;
@@ -157,7 +157,7 @@ public class ContentLayer extends AbstractFilter {
 	}
 
 	// getIDsForFilter() - returns a Set of all IDs used for f
-	public Set<Integer> getIDsForFilter( Filter f ) {
+	public Set<Integer> getIDsForFilter( ContentLayerCompatible f ) {
 		Map<Integer, InformationContent> map = contentByFilter.get( f );
 		if ( map == null ) {
 			return null;
@@ -167,13 +167,13 @@ public class ContentLayer extends AbstractFilter {
 
 	// deleteContentOfFilter() - deletes a filter from the map and all his
 	// content with him
-	public void deleteContentOfFilter( Filter f ) {
+	public void deleteContentOfFilter( ContentLayerCompatible f ) {
 		contentByFilter.remove( f );
 	}
 
 	// setTimeoutForFilter() - sets the timeout for all InformationContents of f
 	// to t
-	public void setTimeoutForFilter( Filter f, int t ) {
+	public void setTimeoutForFilter( ContentLayerCompatible f, int t ) {
 		Map<Integer, InformationContent> map;
 		map = contentByFilter.get( f );
 		if ( map != null ) {
@@ -183,5 +183,12 @@ public class ContentLayer extends AbstractFilter {
 			}
 		}
 	}
+
+	@Override
+	public boolean keyEvent( int key, int event, HotkeyMessage msg ) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 
 }

@@ -12,15 +12,15 @@ public class StringContent extends InformationContent {
 	private Color c;
 	private Font f;
 
-	public StringContent( int timeout, Filter parent, String content, int x, int y ) {
+	public StringContent( int timeout, ContentLayerCompatible parent, String content, int x, int y ) {
 		this( timeout, parent, content, x, y, Color.black, null );
 	}
 
-	public StringContent( int timeout, Filter parent, String content, int x, int y, Color c ) {
+	public StringContent( int timeout, ContentLayerCompatible parent, String content, int x, int y, Color c ) {
 		this( timeout, parent, content, x, y, c, null );
 	}
 
-	public StringContent( int timeout, Filter parent, String content, int x, int y, Color c, Font f ) {
+	public StringContent( int timeout, ContentLayerCompatible parent, String content, int x, int y, Color c, Font f ) {
 		super( timeout, parent );
 		this.content = content;
 		this.x = x;

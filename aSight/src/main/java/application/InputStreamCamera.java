@@ -46,7 +46,7 @@ public class InputStreamCamera extends InputStream {
 		IMetaData params = IMetaData.make();
 
 		params.setValue( "framerate", "30/1" );
-		params.setValue( "video_size", "800x600" );
+		params.setValue( "video_size", "640x480" );
 
 		// Open up the container
 		int retval = container.open( deviceName, IContainer.Type.READ, format, false, true, params, null );
