@@ -24,25 +24,19 @@ import java.util.ArrayList;
 public class Gui implements KeyListener, ContentLayerCompatible {
 
 	private JFrame frame, videoFrame;
-	private VideoField in, out, outFull, outUsed;
-	private Main application;
+	private VideoField in, out, outFull, outUsed;	
 	private InputStream i;
-
 	private int mainKey = 65;
 	private boolean keyPushed = false;
 	private HotkeyMessage msg;
-
 	private ArrayList<Filter> filter;
 
-	/**
-	 * Launch the application.
-	 */
-
-	public static void createGui( final Main application ) {
+	// createGui() - create and start Gui
+	public static void createGui() {
 		EventQueue.invokeLater( new Runnable() {
 			public void run() {
 				try {
-					Gui window = new Gui( application );
+					Gui window = new Gui();
 					window.frame.setVisible( true );
 					window.videoFrame.addKeyListener( window );
 				} catch ( Exception e ) {
@@ -52,11 +46,8 @@ public class Gui implements KeyListener, ContentLayerCompatible {
 		} );
 	}
 
-	/**
-	 * Create the application.
-	 */
-	public Gui( Main application ) {
-		this.application = application;
+	// Gui() - Gui constructor
+	public Gui() {
 		initialize();
 	}
 
@@ -68,24 +59,16 @@ public class Gui implements KeyListener, ContentLayerCompatible {
 		return out;
 	}
 
-	public Main getApplication() {
-		return application;
-	}
-
-	@Override
 	public void keyPressed( KeyEvent e ) {
-		System.out.println( "pressed" + " " + e.getKeyCode() );
 		if ( keyPushed ) {
 			keyMsg( e.getKeyCode(), Utility.pressed );
 		} else {
 			if ( e.getKeyCode() == mainKey ) {
 				keyPushed = true;
-				System.out.println( "MAIN" );
 			}
 		}
 	}
 
-	@Override
 	public void keyReleased( KeyEvent e ) {
 		if ( e.getKeyCode() == mainKey ) {
 			keyPushed = false;
@@ -94,23 +77,18 @@ public class Gui implements KeyListener, ContentLayerCompatible {
 		}
 	}
 
-	@Override
 	public void keyTyped( KeyEvent e ) {
 	}
 
-	
-	
+	// keyMsg() - processes KeyEvents for filters
 	private void keyMsg( int value, int event ) {
-
-		boolean found = false;
-		for ( int i = 0; i < filter.size() && !found; i++ ) {
-			found = filter.get( i ).keyEvent( value, event, msg );
+		boolean processed = false;
+		for ( int i = 0; i < filter.size() && !processed; i++ ) {
+			processed = filter.get( i ).keyEvent( value, event, msg );
 		}
 	}
 
-	/**
-	 * Initialize the contents of the frame.
-	 */
+	// initialize() - initialize contents of the frame
 	private void initialize() {
 		frame = new JFrame();
 		frame.setTitle( "aSight" );
@@ -119,6 +97,7 @@ public class Gui implements KeyListener, ContentLayerCompatible {
 		frame.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
 		frame.getContentPane().setLayout( null );
 
+		// create videoFrame and set as output
 		final GraphicsDevice[] monitorArray = GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices();
 		videoFrame = new JFrame( "Fullscreen Display" );
 		videoFrame.setLocation( monitorArray[0].getDefaultConfiguration().getBounds().getLocation() );
@@ -128,12 +107,13 @@ public class Gui implements KeyListener, ContentLayerCompatible {
 		videoFrame.getContentPane().add( outFull );
 		videoFrame.setVisible( false );
 
+		// create HotkeyMessage to display activated hotkeys in the AR-Display
 		msg = new HotkeyMessage(-1, this);
-		application.getContentLayer().giveContent( this,msg );
+		Main.getContentLayer().giveContent( this,msg );
 		
+		// create content in absolute layout
 		// absolute positioning: all x, y, w and h are multiples of 8!
 		// default line height: 24
-
 		JPanel videoPanel = new JPanel();
 		videoPanel.setBounds( 0, 0, 310, 552 );
 		frame.getContentPane().add( videoPanel );
@@ -148,8 +128,7 @@ public class Gui implements KeyListener, ContentLayerCompatible {
 		changeInput.addActionListener( new ActionListener() {
 			public void actionPerformed( ActionEvent arg0 ) {
 				i.end();
-				i = new InputStreamCamera( in, application, outUsed );
-				// i = new InputStream( in, application, outUsed );
+				i = new InputStreamCamera( in, outUsed );
 				i.start();
 			}
 		} );
@@ -163,11 +142,11 @@ public class Gui implements KeyListener, ContentLayerCompatible {
 		outLabel.setBounds( 168, 248, 80, 24 );
 		videoPanel.add( outLabel );
 
+		// link used output and start screencapture-InputStream
 		outUsed = out;
-		// i = new InputStreamCamera(in, application, outUsed);
-		i = new InputStream( in, application, outUsed );
+		i = new InputStream( in, outUsed );
 
-		final JComboBox<Integer> outComboBox = new JComboBox<Integer>( application.getCountOutputDevices() );
+		final JComboBox<Integer> outComboBox = new JComboBox<Integer>( Main.getCountOutputDevices() );
 		outComboBox.setBounds( 256, 248, 40, 24 );
 		outComboBox.addItemListener( new ItemListener() {
 
@@ -196,14 +175,15 @@ public class Gui implements KeyListener, ContentLayerCompatible {
 		frame.getContentPane().add( filterPanel );
 		filterPanel.setLayout( null );
 
-		{// filterPanel
-			filter = application.getFilter();
+		// filterPanel - call filters to create their GUI
+		{
+			filter = Main.getFilter();
 			int sumHeightPx = 0;
 			int height = 0;
 			int y = 0;
 			// max height = 672
 			for ( Filter f : filter ) {
-				if ( ( height = f.getGUIHeigth() ) > 0 ) {
+				if ( ( height = f.getGUIHeight() ) > 0 ) {
 					if ( ( sumHeightPx + height * 24 + ( height + 1 ) * 8 ) > 552 ) {
 						if ( y == 180 ) {
 							System.err.println( "to many filters!!!!" );
@@ -211,7 +191,6 @@ public class Gui implements KeyListener, ContentLayerCompatible {
 							y = 180;
 							sumHeightPx = 0;
 						}
-
 					}
 					JPanel container = new JPanel();
 					container.setBounds( y, sumHeightPx, 180, height * 24 + ( height + 1 ) * 8 );
@@ -223,7 +202,7 @@ public class Gui implements KeyListener, ContentLayerCompatible {
 			}
 		}
 
+		// start inputStream
 		i.start();
-
 	}
 }

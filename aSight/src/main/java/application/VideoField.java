@@ -8,11 +8,12 @@ import java.awt.image.BufferedImage;
 import javax.swing.JComponent;
 import javax.swing.SwingUtilities;
 
+/*
+ * VideoField - a gui-component that can be used, to display a picture and can be constantly updated (to display a Video)
+ */
+
 public class VideoField extends JComponent {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 6169263855591062369L;
 	private Image myImage;
 	private Dimension mySize;

@@ -6,16 +6,19 @@ import java.awt.Robot;
 //import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
 
+/*
+ * this class is a parent class for other sorts of inputStreams. 
+ * It makes a screencapture and displays it in the specified output and applies the filters
+ */
+
 public class InputStream extends Thread {
 
-	protected VideoField target1, target2;
-	protected Main application;
+	protected VideoField target1, target2;	
 	protected boolean end = false;
 
-	public InputStream( VideoField target1, Main application, VideoField target2 ) {
+	public InputStream( VideoField target1, VideoField target2 ) {
 		this.target1 = target1;
 		this.target2 = target2;
-		this.application = application;
 	}
 
 	public VideoField getTarget1() {
@@ -37,23 +40,19 @@ public class InputStream extends Thread {
 	public void run() {
 		Robot robot;
 		try {
-			robot = new Robot();
-
-			//final Toolkit toolkit = Toolkit.getDefaultToolkit();
-			final Rectangle screenBounds = new Rectangle(800,600);//new Rectangle( toolkit.getScreenSize() );
+			robot = new Robot();			
+			final Rectangle screenBounds = new Rectangle(800,600); // 800 x 600 because it is the maximum resolution of the uses AR-Display
 			while ( !end ) {
 				BufferedImage screen = robot.createScreenCapture( screenBounds );
 				target1.setImage( screen );
-				application.applyFilters( screen, target2 );
+				Main.applyFilters( screen, target2 );
 				try {
 					Thread.sleep( 33 );
 				} catch ( InterruptedException e ) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
 		} catch ( AWTException e1 ) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
 		super.run();

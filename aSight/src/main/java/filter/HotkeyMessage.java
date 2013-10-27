@@ -5,15 +5,20 @@ import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
+import application.Main;
+
 public class HotkeyMessage extends InformationContent {
 
 	private ArrayList<String> messages;
 	private ArrayList<Integer> timeoutList;
+	private int x, y;
 
 	public HotkeyMessage( int timeout, ContentLayerCompatible parent ) {
 		super( timeout, parent );
 		messages = new ArrayList<String>();
 		timeoutList = new ArrayList<Integer>();
+		x = Main.getFromConfig("HotkeyMsgTextX:");
+		y = Main.getFromConfig("HotkeyMsgTextY:");
 	}
 
 	@Override
@@ -26,7 +31,7 @@ public class HotkeyMessage extends InformationContent {
 		g.setFont( application.Main.getFont() );
 		g.setColor( Color.green );
 		for ( String s : messages ) {
-			g.drawString(s, 100, 100 + i * application.Main.getFont().getSize() + 6 );
+			g.drawString(s, x, y + i * application.Main.getFont().getSize() + 6 );
 			i++;
 		}
 		g.dispose();
@@ -42,8 +47,8 @@ public class HotkeyMessage extends InformationContent {
 
 	public void addEvent( String s ) {
 		messages.add( s );
-		timeoutList.add( 15 );
-		if ( messages.size() > 5 ){
+		timeoutList.add( 45 );
+		if ( messages.size() > 3 ){
 			messages.remove( 0 );
 			timeoutList.remove( 0 );
 		}

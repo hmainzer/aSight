@@ -2,6 +2,10 @@ package filter;
 
 import java.awt.image.BufferedImage;
 
+/*
+ * InformationContent is an abstract class for all informations handled by the ContentLayer
+ * paintContent is the relevant function to apply any sort of information in the ContentLayer
+ */
 public abstract class InformationContent {
 
 	

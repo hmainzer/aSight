@@ -49,7 +49,7 @@ public class CorrectionFilter extends AbstractFilter {
 		parentBox.add( isActiveBox );
 	}
 
-	public int getGUIHeigth() {
+	public int getGUIHeight() {
 		return 2;
 	}
 

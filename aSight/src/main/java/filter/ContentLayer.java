@@ -96,7 +96,7 @@ public class ContentLayer extends AbstractFilter {
 	}
 
 	@Override
-	public int getGUIHeigth() {
+	public int getGUIHeight() {
 		// TODO Auto-generated method stub
 		return 2;
 	}

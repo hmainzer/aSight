@@ -13,7 +13,7 @@ import org.apache.commons.net.ftp.FTPReply;
 
 public class FtpManager {
 
-	FTPClient ftp = null;
+	private FTPClient ftp = null;
 
 	public FtpManager( String host, String user, String pwd ) throws Exception {
 		ftp = new FTPClient();
@@ -53,6 +53,8 @@ public class FtpManager {
 		}
 	}
 
+	// uploadFileToFtp() - uploads a file to the chosen ftp server
+	// ! the return value is written for a specific host
 	public static String uploadFileToFtp( String host, String user, String pwd, String localFileName, String fileName,
 			String hostDir ) {
 		try {
@@ -62,8 +64,6 @@ public class FtpManager {
 		} catch ( Exception e ) {
 			e.printStackTrace();
 		}
-		// http://www.asight.bplaced.net/searchImage/Image1380135838979.jpg
-		// return "ftp://" + user + ":" + pwd + "@" + host + hostDir + "/" + fileName;
 		return "http://www.asight.bplaced.net/" + fileName; 
 	}
 
@@ -73,7 +73,6 @@ public class FtpManager {
 			ftpUploader.deleteFile( fileName, hostDir );
 			ftpUploader.disconnect();
 		} catch ( Exception e ) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

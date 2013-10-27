@@ -15,10 +15,15 @@ import com.xuggle.xuggler.IVideoResampler;
 import com.xuggle.xuggler.video.ConverterFactory;
 import com.xuggle.xuggler.video.IConverter;
 
+/*
+ * This class takes a Webcam input and displays it with applied filters
+ * The code is from a Xuggler example
+ */
+
 public class InputStreamCamera extends InputStream {
 
-	public InputStreamCamera( VideoField target1, Main application, VideoField target2 ) {
-		super( target1, application, target2 );
+	public InputStreamCamera( VideoField target1, VideoField target2 ) {
+		super( target1, target2 );
 	}
 
 	@SuppressWarnings( "deprecation" )
@@ -154,22 +159,9 @@ public class InputStreamCamera extends InputStream {
 						// Convert the BGR24 to an Java buffered image
 						BufferedImage javaImage = c.toImage( newPic );
 
-						// Utils.videoPictureToImage(newPic);
-						// ColorConvertOp op = new ColorConvertOp(
-						// ColorSpace.getInstance( ColorSpace.CS_GRAY ), null );
-						// op.filter( javaImage, javaImage );
-
-						// modify
-						// Graphics2D graph = javaImage.createGraphics();
-						// graph.setColor( Color.black );
-						// for ( int x = 0; x < 10; x++ ){
-						// graph.fillRect((int)(Math.random()*640),
-						// (int)(Math.random()*480), (int)(Math.random()*640),
-						// (int)(Math.random()*480));
-						// }
-						// and display it on the Java Swing window
+						// Display on GUI
 						target1.setImage( javaImage );
-						application.applyFilters( javaImage, target2 );
+						Main.applyFilters( javaImage, target2 );
 					}
 				}
 			} else {

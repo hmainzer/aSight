@@ -7,12 +7,11 @@ import java.awt.image.BufferedImage;
 
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
-import java.awt.event.KeyEvent;
 
 public abstract class AbstractFilter implements ContentLayerCompatible, Filter {
 
 	private boolean active = false;
-	protected int defaultKey = KeyEvent.VK_F12;
+	protected int defaultKey = 0;
 
 	public BufferedImage useFilter( BufferedImage img ) {
 		if ( active ) {
@@ -22,8 +21,10 @@ public abstract class AbstractFilter implements ContentLayerCompatible, Filter {
 		}
 	}
 
+	// action() - the concrete action a filter does when applied and active
 	protected abstract BufferedImage action( BufferedImage img );
 
+	// createGUI() - simple implementation for filters with only an active state without any needed configuration
 	public void createGUI( Container parentBox ) {
 		// JLabel
 		JLabel filterLabel = new JLabel( "~~~ " + this.getClass().getCanonicalName() + " ~~~" );
@@ -41,7 +42,7 @@ public abstract class AbstractFilter implements ContentLayerCompatible, Filter {
 		parentBox.add( isActiveBox );
 	}
 
-	public int getGUIHeigth() {
+	public int getGUIHeight() {
 		return 2;
 	}
 
@@ -57,10 +58,7 @@ public abstract class AbstractFilter implements ContentLayerCompatible, Filter {
 		return false;
 	}
 	
-	public boolean keyEvent(int key, int event, HotkeyMessage msg){
-		if (key == defaultKey){
-			return true;
-		}
+	public boolean keyEvent(int key, int event, HotkeyMessage msg){		
 		return false;
 	}
 	
