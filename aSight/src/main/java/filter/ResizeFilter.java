@@ -3,10 +3,6 @@ package filter;
 import java.awt.Container;
 import java.awt.image.BufferedImage;
 
-import ch.qos.logback.classic.pattern.Util;
-
-import com.jhlabs.image.PerspectiveFilter;
-
 import application.Main;
 import application.Utility;
 
