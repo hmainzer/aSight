@@ -31,6 +31,7 @@ public class PictureSearchThread extends Thread {
 	public void run() {
 		content.setLoadingBar("saving");
 		content.setLoadingBarState(true);		
+		new File("ImageSearch/").mkdirs();
 		File outputfile = new File("ImageSearch/SearchImage.jpg");
 		try {
 			ImageIO.write(img, "jpg", outputfile);

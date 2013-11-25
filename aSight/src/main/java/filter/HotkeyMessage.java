@@ -17,8 +17,8 @@ public class HotkeyMessage extends InformationContent {
 		super( timeout, parent );
 		messages = new ArrayList<String>();
 		timeoutList = new ArrayList<Integer>();
-		x = Main.getFromConfig("HotkeyMsgTextX:");
-		y = Main.getFromConfig("HotkeyMsgTextY:");
+		x = Main.getFromConfig("HotkeyMsgTextX");
+		y = Main.getFromConfig("HotkeyMsgTextY");
 	}
 
 	@Override
