@@ -44,6 +44,12 @@ public class PictureSearchThread extends Thread {
 			String category = Integer.toString(this.category);
 			String precision = Integer.toString(this.precision);
 
+			/*
+			 * !!!!!!!!!!!!!!!!!
+			 * May not work at the moment, because the used url cannot be reached since 11.12.2013
+			 * !!!!!!!!!!!!!!!!!
+			 */
+			
 			URL url = new URL(
 					"http://www.revimg.net/jsapi/index_api.php?category="
 							+ category + "&image_url="

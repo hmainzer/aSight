@@ -1,6 +1,5 @@
 package filter;
 
-import java.awt.Color;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.font.FontRenderContext;
@@ -18,7 +17,6 @@ import com.google.zxing.NotFoundException;
 import com.google.zxing.Result;
 import com.google.zxing.client.j2se.BufferedImageLuminanceSource;
 import com.google.zxing.common.HybridBinarizer;
-import com.google.zxing.datamatrix.DataMatrixReader;
 import com.google.zxing.multi.GenericMultipleBarcodeReader;
 import com.google.zxing.multi.qrcode.QRCodeMultiReader;
 import com.google.zxing.oned.Code128Reader;
@@ -26,182 +24,161 @@ import com.google.zxing.oned.Code39Reader;
 import com.google.zxing.oned.EAN13Reader;
 import com.google.zxing.oned.EAN8Reader;
 
-public class CodeThread extends TimerTask{
+/*
+ * The image is here scanned for qr- and barcodes. The results are kept for another go, if no results are found, to be displayed a little bit longer (and leave a little room for error in the recognition). The results are loaded send to a ParaAccesControllList to be picked up by the ParaContent. 
+ */
+public class CodeThread extends TimerTask {
+
 	boolean readQR = false;
-/*	boolean readBar39 = true;
-	boolean readBar128 = true;
-	boolean readEan8 = true;
-	boolean readEan13 = true;*/
 	boolean readBar = false;
-	
-	boolean fisheye = false;
-	double factorFisheye = 1.66;
-	
+
 	boolean activated;
 	Timer timer;
-	
+
 	QRCodeMultiReader qrReader = new QRCodeMultiReader();
 	GenericMultipleBarcodeReader code128Reader = new GenericMultipleBarcodeReader(
 			new Code128Reader());
 	GenericMultipleBarcodeReader code39Reader = new GenericMultipleBarcodeReader(
 			new Code39Reader());
 
-	DataMatrixReader dataMatrixReader = new DataMatrixReader();
-	GenericMultipleBarcodeReader ean13Reader = new GenericMultipleBarcodeReader(new EAN13Reader());
-	GenericMultipleBarcodeReader ean8Reader = new GenericMultipleBarcodeReader(new EAN8Reader());
+	GenericMultipleBarcodeReader ean13Reader = new GenericMultipleBarcodeReader(
+			new EAN13Reader());
+	GenericMultipleBarcodeReader ean8Reader = new GenericMultipleBarcodeReader(
+			new EAN8Reader());
 	ArrayList<CodeParaContainer> codes = new ArrayList<CodeParaContainer>();
 	CodeParaAccessControllList codeAccessControll = new CodeParaAccessControllList();
-	
+
 	// already declared for better memory management
 	Result[] result;
 	Hashtable<DecodeHintType, Object> decodeHints = new Hashtable<DecodeHintType, Object>();
 	CodeParaAccessControllImg imgAccess;
 	String text;
-	
-	public CodeThread(CodeParaAccessControllImg imgAccess, CodeParaAccessControllList code) {
+
+	public CodeThread(CodeParaAccessControllImg imgAccess,
+			CodeParaAccessControllList code) {
 		super();
 		this.imgAccess = imgAccess;
 		this.codeAccessControll = code;
 		decodeHints.put(DecodeHintType.TRY_HARDER, Boolean.TRUE);
 	}
-	
-	public void setActivate(boolean act){
+
+	public void setActivate(boolean act) {
 		this.activated = act;
-		if (act==false){
+		if (act == false) {
 			codes.clear();
 			codeAccessControll.write(codes);
+			lastReadSuccessfull = false;
 		}
 	}
-	
-	public void setReadbar(boolean read){
+
+	public void setReadbar(boolean read) {
 		this.readBar = read;
 	}
-	
-	public void setReadQR(boolean read){
+
+	public void setReadQR(boolean read) {
 		this.readQR = read;
 	}
-	
-	static class Coordinates{
-		int x;
-		int y;
-		public Coordinates(int x, int y) {
-			this.x=x;
-			this.y=y;
-		}
-		
-		int getX(){
-			return x;
-		}
-		
-		int getY(){
-			return y;
+
+	private void readBar(GenericMultipleBarcodeReader reader,
+			BinaryBitmap bitmap, FontMetrics fontMetrics, Graphics g,
+			BufferedImage img) throws NotFoundException {
+		result = reader.decodeMultiple(bitmap, decodeHints);
+		for (Result tempResult : result) {
+			codes.add(new CodeParaContainer(tempResult.getText(),
+					(int) tempResult.getResultPoints()[0].getX(),
+					(int) tempResult.getResultPoints()[0].getY(),
+					(int) tempResult.getResultPoints()[1].getX(),
+					(int) tempResult.getResultPoints()[1].getY(),
+					(int) fontMetrics.getStringBounds(tempResult.getText(), g)
+							.getWidth(), (int) fontMetrics.getStringBounds(
+							tempResult.getText(), g).getHeight(), img
+							.getWidth(), img.getHeight(),
+					(int) (application.Main.getFont().getLineMetrics(
+							tempResult.getText(),
+							new FontRenderContext(new AffineTransform(), true,
+									true)).getAscent())));
 		}
 	}
 
-	
-	
-	//fisheye-Stuff follows
-	
-	double dist(int x, int y){
-		return Math.sqrt((x*x) + (y*y));
-	}
-	
-	Coordinates defisheye(int srcWidth, int srcHeight, int targetWidth, int targetHeight, int x, int y, double factor){
-		//dx, dy zu relativen koordinaten
-		int rx = x - (targetWidth/2);
-		int ry = y - (targetHeight/2);
-		//berechne theta
-		double r = dist(rx,ry)/(dist(srcWidth,srcHeight)/factor);
-		
-		double theta;
-		
-		if (r == 0)
-			theta = 1.0;
-		else
-			theta = Math.atan(r)/r;
-		double sx = (srcWidth/2) + theta*rx;
-		double sy = (srcHeight/2) + theta*ry;
-		return new Coordinates((int)Math.round(sx), (int)Math.round(sy));
-	}
-	
-	BufferedImage fisheye(BufferedImage image, double factor){
-		BufferedImage returnImage = new BufferedImage((int)(image.getWidth()), (int)(image.getHeight()), image.getType());
-		for (int y=0; y<returnImage.getHeight(); y++){
-			for (int x=0; x<returnImage.getWidth(); x++){
-				Coordinates newPoint = defisheye(image.getWidth(), image.getHeight(), returnImage.getWidth(), returnImage.getHeight(), x, y, factor);
-				try {
-					returnImage.setRGB(x, y, image.getRGB(newPoint.getX(), newPoint.getY()));
-				} catch (ArrayIndexOutOfBoundsException ex) {
-					returnImage.setRGB(x, y, Color.red.getRGB());
+	private void readAll(ArrayList<CodeParaContainer> codes,
+			BinaryBitmap bitmap, BufferedImage img, Graphics g,
+			FontMetrics fontMetrics) throws CodeParaNoObjectYetException {
+		if (readQR) {
+			try {
+				result = qrReader.decodeMultiple(bitmap, decodeHints);
+				for (Result tempResult : result) {
+					text = tempResult.getText();
+					if (text.length() > 50)
+						text = text.substring(0, 49) + "...";
+					codes.add(new CodeParaContainer(tempResult.getText(),
+							(int) tempResult.getResultPoints()[0].getX(),
+							(int) tempResult.getResultPoints()[0].getY(),
+							(int) tempResult.getResultPoints()[2].getX(),
+							(int) tempResult.getResultPoints()[2].getY(),
+							(int) fontMetrics.getStringBounds(
+									tempResult.getText(), g).getWidth(),
+							(int) fontMetrics.getStringBounds(
+									tempResult.getText(), g).getHeight(), img
+									.getWidth(), img.getHeight(),
+							(int) (application.Main.getFont().getLineMetrics(
+									tempResult.getText(),
+									new FontRenderContext(
+											new AffineTransform(), true, true))
+									.getAscent())));
 				}
+			} catch (NotFoundException e) {
 			}
 		}
-		return returnImage;
+
+		if (readBar) {
+			try {
+				readBar(code39Reader, bitmap, fontMetrics, g, img);
+			} catch (NotFoundException e) {
+			}
+
+			try {
+				readBar(code128Reader, bitmap, fontMetrics, g, img);
+			} catch (NotFoundException e) {
+			}
+			try {
+				readBar(ean13Reader, bitmap, fontMetrics, g, img);
+			} catch (NotFoundException e) {
+			}
+
+			try {
+				readBar(ean8Reader, bitmap, fontMetrics, g, img);
+			} catch (NotFoundException e) {
+			}
+		}
 	}
-	
-	//end of fisheye-stuff
-	
+
+	private boolean lastReadSuccessfull = false;
+
 	public void run() {
-		if (activated){
-		try {
-			BufferedImage img = imgAccess.read();
-			codes.clear();
-			if (fisheye)
-				img = fisheye(img, factorFisheye);
-			LuminanceSource source = new BufferedImageLuminanceSource(img);
-			BinaryBitmap bitmap = new BinaryBitmap(new HybridBinarizer(source));
-			Graphics g = img.getGraphics();
-			FontMetrics fontMetrics = img.getGraphics().getFontMetrics(application.Main.getFont());
+		if (activated) {
+			try {
+				codes.clear();
+				BufferedImage img = imgAccess.read();
+				LuminanceSource source = new BufferedImageLuminanceSource(img);
+				BinaryBitmap bitmap = new BinaryBitmap(new HybridBinarizer(
+						source));
+				Graphics g = img.getGraphics();
+				FontMetrics fontMetrics = img.getGraphics().getFontMetrics(
+						application.Main.getFont());
+				readAll(codes, bitmap, img, g, fontMetrics);
 
-			if (readQR) {
-				try {
-					result = qrReader.decodeMultiple(bitmap,decodeHints);
-					for (Result tempResult : result) {
-						text = tempResult.getText();
-						if (text.length()>50)
-							text = text.substring(0,49) + "...";
-						codes.add(new CodeParaContainer(tempResult.getText(), (int)tempResult.getResultPoints()[0].getX(), (int)tempResult.getResultPoints()[0].getY(), (int)tempResult.getResultPoints()[2].getX(), (int)tempResult.getResultPoints()[2].getY(), (int)fontMetrics.getStringBounds(tempResult.getText(), g).getWidth(),(int)fontMetrics.getStringBounds(tempResult.getText(), g).getHeight(),img.getWidth(), img.getHeight(),(int)(application.Main.getFont().getLineMetrics(tempResult.getText(),new FontRenderContext(new AffineTransform(),true,true)).getAscent())));
-					}
-				} catch (NotFoundException e) {}
-			}
-			
-			if (readBar) {
-				try {
-					result = code39Reader.decodeMultiple(bitmap, decodeHints);
-					for (Result tempResult : result) {
-						codes.add(new CodeParaContainer(tempResult.getText(), (int)tempResult.getResultPoints()[0].getX(), (int)tempResult.getResultPoints()[0].getY(), (int)tempResult.getResultPoints()[1].getX(), (int)tempResult.getResultPoints()[1].getY(), (int)fontMetrics.getStringBounds(tempResult.getText(), g).getWidth(),(int)fontMetrics.getStringBounds(tempResult.getText(), g).getHeight(),img.getWidth(), img.getHeight(),(int)(application.Main.getFont().getLineMetrics(tempResult.getText(), new FontRenderContext(new AffineTransform(),true,true)).getAscent())));
-					}
-				} catch (NotFoundException e) {
+				if (codes.size() > 0) {
+					lastReadSuccessfull = true;
+					codeAccessControll.write(codes);
+				} else if (lastReadSuccessfull) {
+					// keeps the results of the last run for one more cycle
+					lastReadSuccessfull = false;
+				} else {
+					codeAccessControll.write(codes);
 				}
+			} catch (CodeParaNoObjectYetException e1) {
+			}
 
-				try {
-					result = code128Reader.decodeMultiple(bitmap, decodeHints);
-					for (Result tempResult : result) {
-						codes.add(new CodeParaContainer(tempResult.getText(), (int)tempResult.getResultPoints()[0].getX(), (int)tempResult.getResultPoints()[0].getY(), (int)tempResult.getResultPoints()[1].getX(), (int)tempResult.getResultPoints()[1].getY(), (int)fontMetrics.getStringBounds(tempResult.getText(), g).getWidth(),(int)fontMetrics.getStringBounds(tempResult.getText(), g).getHeight(),img.getWidth(), img.getHeight(),(int)(application.Main.getFont().getLineMetrics(tempResult.getText(), new FontRenderContext(new AffineTransform(),true,true)).getAscent())));
-					}
-				} catch (NotFoundException e) {
-				}
-				try {
-					result = ean13Reader.decodeMultiple(bitmap, decodeHints);
-					for (Result tempResult : result) {
-						codes.add(new CodeParaContainer(tempResult.getText(), (int)tempResult.getResultPoints()[0].getX(), (int)tempResult.getResultPoints()[0].getY(), (int)tempResult.getResultPoints()[1].getX(), (int)tempResult.getResultPoints()[1].getY(), (int)fontMetrics.getStringBounds(tempResult.getText(), g).getWidth(),(int)fontMetrics.getStringBounds(tempResult.getText(), g).getHeight(),img.getWidth(), img.getHeight(),(int)(application.Main.getFont().getLineMetrics(tempResult.getText(), new FontRenderContext(new AffineTransform(),true,true)).getAscent())));
-					}
-				} catch (NotFoundException e) {
-				}
-				
-				try {
-					result = ean8Reader.decodeMultiple(bitmap, decodeHints);
-					for (Result tempResult : result) {
-						codes.add(new CodeParaContainer(tempResult.getText(), (int)tempResult.getResultPoints()[0].getX(), (int)tempResult.getResultPoints()[0].getY(), (int)tempResult.getResultPoints()[1].getX(), (int)tempResult.getResultPoints()[1].getY(), (int)fontMetrics.getStringBounds(tempResult.getText(), g).getWidth(),(int)fontMetrics.getStringBounds(tempResult.getText(), g).getHeight(),img.getWidth(), img.getHeight(),(int)(application.Main.getFont().getLineMetrics(tempResult.getText(), new FontRenderContext(new AffineTransform(),true,true)).getAscent())));
-					}
-				} catch (NotFoundException e) {
-				}
-			}
-			codeAccessControll.write(codes);
-		} catch (CodeParaNoObjectYetException e1) {
-		}
-		
 		}
 	}
-	
 }

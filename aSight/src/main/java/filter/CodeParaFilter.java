@@ -9,6 +9,9 @@ import java.util.Timer;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 
+/*
+ * ParaFilter creates the thread (which does the actual work) and provides a GUI and the means to controll it.
+ * */
 public class CodeParaFilter extends AbstractFilter {
 	CodeParaContent codeContent;
 	CodeParaAccessControllImg imgAccess = new CodeParaAccessControllImg();
@@ -29,44 +32,43 @@ public class CodeParaFilter extends AbstractFilter {
 		timer.schedule(thread, 1000, 1000);
 		contentLayer.giveContent(this, codeContent);
 	}
-
+		
 	protected BufferedImage action(BufferedImage img) {
 		imgAccess.write(img);
 		return img;
-	}
+		}
 
-	public void createGUI(Container parentBox) {
+	public void createGUI( Container parentBox ) {
 		JLabel filterLabel = new JLabel("~~~ Codereader ~~~");
 		parentBox.add(filterLabel);
 		qrBox = new JCheckBox("QR Codes");
 		barcodeBox = new JCheckBox("Barcodes");
 
-		filterLabel.setBounds(8, 8, 164, 24);
-		qrBox.setBounds(8, 40, 164, 24);
-		barcodeBox.setBounds(8, 72, 164, 24);
-
+		filterLabel.setBounds( 8, 8, 164, 24 );
+		qrBox.setBounds( 8, 40, 164, 24 );
+		barcodeBox.setBounds( 8, 72, 164, 24 );
+		
 		qrBox.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				thread.setReadQR(qrBox.isSelected());
-				thread.setActivate(qrBox.isSelected()
-						|| barcodeBox.isSelected());
+				thread.setActivate(qrBox.isSelected() || barcodeBox.isSelected());
 				setActive(qrBox.isSelected() || barcodeBox.isSelected());
 			}
 		});
-
+		
 		barcodeBox.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				thread.setReadbar(barcodeBox.isSelected());
-				thread.setActivate(qrBox.isSelected()
-						|| barcodeBox.isSelected());
+				thread.setActivate(qrBox.isSelected() || barcodeBox.isSelected());
 				setActive(qrBox.isSelected() || barcodeBox.isSelected());
 			}
 		});
-
+		
 		parentBox.add(qrBox);
 		parentBox.add(barcodeBox);
 	}
-
+	
+	
 	public int getGUIHeight() {
 		return 3;
 	}

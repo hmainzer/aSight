@@ -3,6 +3,11 @@ package filter;
 import java.awt.Color;
 import java.awt.Graphics;
 
+
+//CodeParaContainer ist eine "verpackung" für Ausgabeinformationen von QR-Codes. Jeder Container hat die Informationen wo sein Text steht, und wird diesen über PaintContent in eine Graphik zeichnen.
+/*
+ * ParaContainer is a wrapper for output-informations from qr- or barcodes. It stores where and how the boxes are displayd, and has a paintContent method which paints the text on the right coordinates on a given graphic
+ * */
 public class CodeParaContainer {
 	private int xText;
 	private int yText;
@@ -15,6 +20,9 @@ public class CodeParaContainer {
 	int borderWidth;
 	int borderHeight;
 	
+	public String getText(){
+		return text;
+	}
 	public CodeParaContainer(String text, int x1, int y1, int x2, int y2, int stringWidth, int stringHeight, int imgWidth, int imgHeight, int ascent) {
 		
 		// gets the center of the Text in the center of the two given points
@@ -38,12 +46,9 @@ public class CodeParaContainer {
 	
 	public void paintContent(Graphics g){
 		g.setColor(bgColor);
-		
 		g.fillRect(borderX, borderY, borderWidth, borderHeight);
 		g.setColor(textColor);
 		g.drawString(text, xText, yText);
-		
-		g.setColor(Color.red);
 	}
 	
 }

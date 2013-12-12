@@ -2,12 +2,16 @@ package filter;
 
 import java.util.ArrayList;
 
+/*
+ * ParaAccessControllList is a fairly standart access controll (as learned in para). Here the CodeParaContainers are send back to the contentLayer, which displays them. If there is no Object to display there yet - it happens sometimes - an error is thrown.
+ * */
 public class CodeParaAccessControllList {
 	ArrayList<CodeParaContainer> codes = null;
 
 	private boolean readerActive;
 	private boolean writerActive;
-	private boolean writerWaiting;
+	private boolean writerWaiting;	
+
 	
 	public ArrayList<CodeParaContainer> read() throws CodeParaNoObjectYetException{
 		beforeRead();

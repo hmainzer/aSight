@@ -34,7 +34,7 @@ public class Main {
 		filterList.add(new PictureSearchFilter());
 		filterList.add(new CodeParaFilter(contentLayer));
 		filterList.add(contentLayer);
-		filterList.add(new CorrectionFilter());
+		//filterList.add(new CorrectionFilter());
 		contentLayer.setFilterList(filterList);
 		
 		// start GUI
@@ -99,7 +99,6 @@ public class Main {
 
 	// getFromConfig(..) - returns configuration which is saved with the key s
 	public static int getFromConfig(String s) {
-		System.out.println(s);
 		return configuration.get(s);
 	}
 	
